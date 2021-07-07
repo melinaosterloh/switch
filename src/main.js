@@ -29,18 +29,17 @@ var game = new Phaser.Game(config);
 
 var leben;
 
+var playerPosition
+
 var currentModel
 var currentGround
 
 
 //Funktion um Bilder/Sprites im Voraus zu laden
 function preload() {
-    this.leben = 3
-
     this.load.image('sky', 'assets/background.png');
     this.load.image('ground', 'assets/platform.png');
-    this.load.image('water', 'assets/water.png')
-    this.load.image('darkness', 'assets/darkness2.png')
+    this.load.image('water','assets/water.png')
 
     this.enteModel = {
         name: 'Ente',
@@ -73,86 +72,10 @@ function preload() {
         frameWidth: 77,
         frameHeight: 60
     });
-    this.load.spritesheet(this.katzeModel.supermodel, 'assets/super_katze.png', {
+    this.load.spritesheet(this.katzeModel.supermodel, 'assets/super_cat.png', {
         frameWidth: 77,
         frameHeight: 60
     });
-
-}
-
-function createTurnAnimation(animations, modelname, frame) {
-    animations.create({
-        key: modelname + '_turn',
-        frames: [{
-            key: modelname,
-            frame: frame
-        }],
-        frameRate: 20
-    });
-}
-
-function createMoveRightAnimation(animations, modelname, frame_from, frame_to) {
-    animations.create({
-        key: modelname + '_right',
-        frames: animations.generateFrameNumbers(modelname, {
-            start: frame_from,
-            end: frame_to
-        }),
-        frameRate: 10,
-        repeat: -1
-    });
-}
-
-function createMoveLeftAnimation(animations, modelname, frame_from, frame_to) {
-    animations.create({
-        key: modelname + '_left',
-        frames: animations.generateFrameNumbers(modelname, {
-            start: frame_from,
-            end: frame_to
-        }),
-        frameRate: 10,
-        repeat: -1
-    });
-}
-
-function createJumpAnimation(animations, modelname, frame_from, frame_to) {
-    animations.create({
-        key: modelname + '_jump',
-        frames: animations.generateFrameNumbers(modelname, {
-            start: frame_from,
-            end: frame_to
-        }),
-        frameRate: 20,
-        repeat: -1
-    });
-}
-
-function createSwimRightAnimation(that, modelname, frame) {
-    that.anims.create({
-        key: modelname + '_swim_right',
-        frames: [{
-            key: modelname,
-            frame: frame
-        }],
-        frameRate: 20
-    });
-}
-
-function createSwimLeftAnimation(that, modelname, frame) {
-    that.anims.create({
-        key: modelname + '_swim_left',
-        frames: [{
-            key: modelname,
-            frame: frame
-        }],
-        frameRate: 20
-    });
-}
-
-function movePlayer(that, direction, speed){
-    if(direction == 'left'){
-        speed = speed * -1;
-    }
 
     if (keyObkSpace.isDown) {
         switch (that.currentModel.name) {
@@ -225,16 +148,16 @@ function create() {
     //------PLATFORMEN&BODEN-----//
     platforms = this.physics.add.staticGroup();
     for (let i = 0; i < 10; i++) {
-        if (i == 0) {
-            platforms.create(200 + (400 * i), 795 - 16, 'ground')
+        if(i == 0){
+            platforms.create(200 + (400 * i), 795-16, 'ground')
         } else {
-            if (Math.random() < 0.4) {
-                platforms.create(200 + (400 * i), 795 - 16, 'water')
+            if(Math.random() < 0.4){
+                platforms.create(200 + (400 * i), 795-16, 'water')
             } else {
-                platforms.create(200 + (400 * i), 795 - 16, 'ground')
+                platforms.create(200 + (400 * i), 795-16, 'ground')
             }
         }
-    }
+      }
 
     //platforms.create(600, 400, 'ground');
     //platforms.create(50, 250, 'ground');
