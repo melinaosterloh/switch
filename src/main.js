@@ -9,7 +9,7 @@ var config = {
             gravity: {
                 y: 300
             },
-            debug: false
+            debug: true
         }
     },
     //Vorbereitung der Ansicht
@@ -24,7 +24,6 @@ var enteModel;
 var affeModel;
 var katzeModel
 
-
 var game = new Phaser.Game(config);
 
 var leben;
@@ -35,12 +34,155 @@ var currentModel
 var currentGround
 
 
+function createTurnAnimation(that, name, frame){
+    that.anims.create({
+        key: name + '_turn',
+        frames: [{
+            key: name,
+            frame: frame
+        }],
+        frameRate: 20
+    });
+}
+
+function createDeathAnimation(that, name, frame){
+    that.anims.create({
+        key: name + '_death',
+        frames: [{
+            key: name,
+            frame: frame
+        }],
+        frameRate: 20
+    });
+}
+
+
+function createMoveAnimation(that, direction, name, frame_from, frame_to){
+    that.anims.create({
+        key: name +'_' + direction,
+        frames: that.anims.generateFrameNumbers(name, {
+            start: frame_from,
+            end: frame_to
+        }),
+        frameRate: 10,
+        repeat: -1
+    });
+}
+
+function createTree(rnd, x){
+    switch(rnd) {
+        case 1:
+            scale = 0.25
+            tree = trees.create(x, 650, 'tree0')
+            tree.setScale(scale)
+            tree.body.width = tree.body.width * scale  
+            tree.body.height = tree.body.height * scale 
+            tree.body.x = tree.x - tree.width * scale / 2;
+            tree.body.y = tree.y - tree.height * scale / 2
+            break;
+        case 2:
+            scale = 0.5
+            tree = trees.create(x, 640, 'tree1')
+            tree.setScale(scale)
+            tree.body.width = tree.body.width * scale  
+            tree.body.height = tree.body.height * scale 
+            tree.body.x = tree.x - tree.width * scale / 2;
+            tree.body.y = tree.y - tree.height * scale / 2
+            break;
+        case 3:
+            scale = 0.5
+            tree = trees.create(x, 620, 'tree2')
+            tree.setScale(scale)
+            tree.body.width = tree.body.width * scale  
+            tree.body.height = tree.body.height * scale 
+            tree.body.x = tree.x - tree.width * scale / 2;
+            tree.body.y = tree.y - tree.height * scale / 2
+            break;
+    }
+}
+
+function movePlayer(that, direction, speed){
+    if('left' == direction){
+        speed = speed * -1;
+    }
+
+    if (keyObkSpace.isDown) {
+        switch (that.currentModel.name) {
+            case 'Ente':
+                if(that.currentGround.texture.key == 'ground' && currentPlayer.body.touching.down){
+                    currentPlayer.setVelocityX(0);
+                }
+                currentPlayer.anims.play(that.currentModel.supermodel + '_swim_' + direction, true);
+                break;
+            case 'Affe':
+                break;
+            case 'Katze':
+                currentPlayer.setVelocityX(speed * 2);
+                currentPlayer.anims.play(that.currentModel.supermodel + '_' + direction, true);
+                break;
+        }
+    } else {
+
+        if (currentPlayer.getCenter().x > 100 || currentPlayer.getCenter().x < 1200) {
+            currentPlayer.setVelocityX(speed);
+        }
+        else {
+            currentPlayer.setVelocityX(0);
+            if(direction == 'left'){
+                background.tilePositionX -= 2
+            } else {
+                background.tilePositionX += 2
+            }
+        }
+        currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
+    }
+}
+
+function die(that){
+    currentPlayer.anims.play(that.currentModel.name + '_death');
+}
+
+function moveGround(speed){
+    platforms.getChildren().forEach((c) => {
+        if (c instanceof Phaser.GameObjects.Sprite) {
+            c.x = c.x + speed
+            c.body.x = c.body.x + speed
+        }
+    })
+    trees.getChildren().forEach((t) => {
+        if (t instanceof Phaser.GameObjects.Sprite) {
+            t.x = t.x + speed
+            t.body.x = t.body.x + speed
+        }
+    })
+}
+
+function moveDarkness(speed){
+    darkness.getChildren()[0].x = darkness.getChildren()[0].x + speed
+    darkness.getChildren()[0].body.x = darkness.getChildren()[0].body.x + speed
+}
+
+function hitDarkness(player, darkness) {
+    this.leben = 0;
+}
+
+function detectGround(player, ground) {
+    this.currentGround = ground;
+    if(ground.texture.key == 'water' && player.texture.key != 'Ente'){
+        this.leben -= 1
+        player.setX(player.x - 100)
+    }
+}
+
 //Funktion um Bilder/Sprites im Voraus zu laden
 function preload() {
     this.load.image('sky', 'assets/background.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('water','assets/water.png')
     this.load.image('darkness','assets/darkness2.png')
+    this.load.image('tree0','assets/tree.png')
+    this.load.image('tree1','assets/tree1.png')
+    this.load.image('tree2','assets/tree2.png')
 
     this.enteModel = {
         name: 'Ente',
@@ -81,95 +223,6 @@ function preload() {
     });
 }
 
-function createTurnAnimation(that, name, frame){
-    that.anims.create({
-        key: name + '_turn',
-        frames: [{
-            key: name,
-            frame: frame
-        }],
-        frameRate: 20
-    });
-}
-
-
-function createMoveAnimation(that, direction, name, frame_from, frame_to){
-    that.anims.create({
-        key: name +'_' + direction,
-        frames: that.anims.generateFrameNumbers(name, {
-            start: frame_from,
-            end: frame_to
-        }),
-        frameRate: 10,
-        repeat: -1
-    });
-}
-
-function movePlayer(that, direction, speed){
-    if('left' == direction){
-        speed = speed * -1;
-    }
-
-    if (keyObkSpace.isDown) {
-        switch (that.currentModel.name) {
-            case 'Ente':
-                if(that.currentGround.texture.key == 'ground' && currentPlayer.body.touching.down){
-                    currentPlayer.setVelocityX(0);
-                }
-                currentPlayer.anims.play(that.currentModel.supermodel + '_swim_' + direction, true);
-                break;
-            case 'Affe':
-                break;
-            case 'Katze':
-                currentPlayer.setVelocityX(speed * 2);
-                currentPlayer.anims.play(this.currentModel.supermodel + '_' + direction, true);
-                break;
-        }
-    } else {
-
-        if (currentPlayer.getCenter().x > 100 || currentPlayer.getCenter().x < 1200) {
-            currentPlayer.setVelocityX(speed);
-        }
-        else {
-            currentPlayer.setVelocityX(0);
-            if(direction == 'left'){
-                background.tilePositionX -= 2
-            } else {
-                background.tilePositionX += 2
-            }
-        }
-        currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
-    }
-}
-
-function moveGround(speed){
-    platforms.getChildren().forEach((c) => {
-        if (c instanceof Phaser.GameObjects.Sprite) {
-            c.x = c.x + speed
-            c.body.x = c.body.x + speed
-        }
-    })
-}
-
-function moveDarkness(speed){
-    darkness.getChildren()[0].x = darkness.getChildren()[0].x + speed
-    darkness.getChildren()[0].body.x = darkness.getChildren()[0].body.x + speed
-}
-
-
-function hitDarkness(player, darkness) {
-    //console.log("getroffen")
-    this.leben = 0;
-}
-
-function detectGround(player, ground) {
-    this.currentGround = ground;
-    if(ground.texture.key == 'water' && player.texture.key != 'Ente'){
-        this.leben -= 1
-        player.setX(player.x - 100)
-    }
-}
-
 //##############
 ///CREATE
 //##############
@@ -180,17 +233,27 @@ function create() {
 
     //------PLATFORMEN&BODEN-----//
     platforms = this.physics.add.staticGroup();
-    for (let i = 0; i < 10; i++) {
+    trees = this.physics.add.staticGroup();
+
+
+    for (let i = 0; i < 20; i++) {
         if(i == 0){
             platforms.create(200 + (400 * i), 795-16, 'ground')
         } else {
             if(Math.random() < 0.4){
                 platforms.create(200 + (400 * i), 795-16, 'water')
             } else {
-                platforms.create(200 + (400 * i), 795-16, 'ground')
+                xValue = 200 + (400 * i)    
+                xTreeValue = Phaser.Math.Between(xValue - 200, xValue + 200)
+                rnd = Phaser.Math.Between(0,2)
+
+                createTree(rnd, xTreeValue)
+
+                platforms.create(xValue, 795-16, 'ground')
             }
         }
       }
+
 
     //platforms.create(600, 400, 'ground');
     //platforms.create(50, 250, 'ground');
@@ -222,6 +285,10 @@ function create() {
 
     //ANIMATIONEN SPIELER MIT SPRITESHEET
 
+    createDeathAnimation(this, this.enteModel.name, 13);
+    createDeathAnimation(this, this.affeModel.name, 11);
+    createDeathAnimation(this, this.katzeModel.name, 9);
+
     createTurnAnimation(this, this.enteModel.name, 4);
     createTurnAnimation(this, this.affeModel.name, 4);
     createTurnAnimation(this, this.katzeModel.name, 4);
@@ -243,6 +310,7 @@ function create() {
     createMoveAnimation(this, 'swim_left',  this.enteModel.name, 9, 10)
 
     this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
+    this.physics.add.collider(currentPlayer, trees)
     this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
 
     //Eingebauter Keyboard Manager
@@ -318,7 +386,7 @@ function update() {
                             currentPlayer.setVelocityY(-330); //Y weil nach oben
                             break;
                         case 'Affe':
-                            currentPlayer.setVelocityY(-330 * 2); //Y weil nach oben
+                            currentPlayer.setVelocityY(-330 * 1.4); //Y weil nach oben
                             break;
                         case 'Katze':
                             currentPlayer.setVelocityY(-330); //Y weil nach oben
@@ -343,6 +411,6 @@ function update() {
         }
     } else {
         currentPlayer.setVelocityX(0);
-        currentPlayer.anims.play(this.currentModel.name + '_turn', true);
+        die(this)
     }
 }
