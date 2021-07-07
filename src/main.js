@@ -40,6 +40,7 @@ function preload() {
     this.load.image('sky', 'assets/background.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('water','assets/water.png')
+    this.load.image('darkness','assets/darkness2.png')
 
     this.enteModel = {
         name: 'Ente',
@@ -60,6 +61,8 @@ function preload() {
         supermodel: 'SuperCat'
     }
 
+    this.leben = 3;
+
     this.load.spritesheet(this.enteModel.name, 'assets/ente2.png', {
         frameWidth: 49,
         frameHeight: 60
@@ -76,6 +79,36 @@ function preload() {
         frameWidth: 77,
         frameHeight: 60
     });
+}
+
+function createTurnAnimation(that, name, frame){
+    that.anims.create({
+        key: name + '_turn',
+        frames: [{
+            key: name,
+            frame: frame
+        }],
+        frameRate: 20
+    });
+}
+
+
+function createMoveAnimation(that, direction, name, frame_from, frame_to){
+    that.anims.create({
+        key: name +'_' + direction,
+        frames: that.anims.generateFrameNumbers(name, {
+            start: frame_from,
+            end: frame_to
+        }),
+        frameRate: 10,
+        repeat: -1
+    });
+}
+
+function movePlayer(that, direction, speed){
+    if('left' == direction){
+        speed = speed * -1;
+    }
 
     if (keyObkSpace.isDown) {
         switch (that.currentModel.name) {
@@ -189,25 +222,25 @@ function create() {
 
     //ANIMATIONEN SPIELER MIT SPRITESHEET
 
-    createTurnAnimation(this.anims, this.enteModel.name, 4);
-    createTurnAnimation(this.anims, this.affeModel.name, 4);
-    createTurnAnimation(this.anims, this.katzeModel.name, 4);
-    createTurnAnimation(this.anims, this.katzeModel.supermodel, 4);
+    createTurnAnimation(this, this.enteModel.name, 4);
+    createTurnAnimation(this, this.affeModel.name, 4);
+    createTurnAnimation(this, this.katzeModel.name, 4);
+    createTurnAnimation(this, this.katzeModel.supermodel, 4);
 
-    createMoveRightAnimation(this.anims, this.enteModel.name, 5, 8);
-    createMoveRightAnimation(this.anims, this.affeModel.name, 5, 8);
-    createMoveRightAnimation(this.anims, this.katzeModel.name, 5, 8);
-    createMoveRightAnimation(this.anims, this.katzeModel.supermodel, 5, 8);
+    createMoveAnimation(this, 'right', this.enteModel.name, 5, 8);
+    createMoveAnimation(this, 'right', this.affeModel.name, 5, 8);
+    createMoveAnimation(this, 'right', this.katzeModel.name, 5, 8);
+    createMoveAnimation(this, 'right', this.katzeModel.supermodel, 5, 8);
 
-    createMoveLeftAnimation(this.anims, this.enteModel.name, 0, 3);
-    createMoveLeftAnimation(this.anims, this.affeModel.name, 0, 3);
-    createMoveLeftAnimation(this.anims, this.katzeModel.name, 0, 3);
-    createMoveLeftAnimation(this.anims, this.katzeModel.supermodel, 0, 3);
+    createMoveAnimation(this, 'left', this.enteModel.name, 0, 3);
+    createMoveAnimation(this, 'left', this.affeModel.name, 0, 3);
+    createMoveAnimation(this, 'left', this.katzeModel.name, 0, 3);
+    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 3);
 
-    createJumpAnimation(this.anims, this.affeModel.name, 9, 10)
+    createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
 
-    createSwimRightAnimation(this, this.enteModel.name, 10)
-    createSwimLeftAnimation(this, this.enteModel.name, 9)
+    createMoveAnimation(this, 'swim_right', this.enteModel.name, 10)
+    createMoveAnimation(this, 'swim_left',  this.enteModel.name, 9)
 
     this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
     this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
