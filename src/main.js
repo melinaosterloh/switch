@@ -64,16 +64,16 @@ function preload() {
     this.leben = 3;
 
     this.load.spritesheet(this.enteModel.name, 'assets/ente2.png', {
-        frameWidth: 49,
-        frameHeight: 60
+        frameWidth: 57.2,
+        frameHeight: 70
     });
     this.load.spritesheet(this.affeModel.name, 'assets/affe2.png', {
-        frameWidth: 38,
-        frameHeight: 60
+        frameWidth: 42.75,
+        frameHeight: 70
     });
     this.load.spritesheet(this.katzeModel.name, 'assets/katze.png', {
-        frameWidth: 77,
-        frameHeight: 60
+        frameWidth: 98.6,
+        frameHeight: 70
     });
     this.load.spritesheet(this.katzeModel.supermodel, 'assets/super_cat.png', {
         frameWidth: 77,
@@ -239,8 +239,8 @@ function create() {
 
     createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
 
-    createMoveAnimation(this, 'swim_right', this.enteModel.name, 10)
-    createMoveAnimation(this, 'swim_left',  this.enteModel.name, 9)
+    createMoveAnimation(this, 'swim_right', this.enteModel.name, 11, 12)
+    createMoveAnimation(this, 'swim_left',  this.enteModel.name, 9, 10)
 
     this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
     this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
