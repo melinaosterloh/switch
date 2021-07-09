@@ -9,7 +9,7 @@ var config = {
             gravity: {
                 y: 300
             },
-            debug: true
+            debug: false
         }
     },
     //Vorbereitung der Ansicht
@@ -27,6 +27,7 @@ var katzeModel
 var game = new Phaser.Game(config);
 
 var leben;
+var spielAmLaufen;
 
 var playerPosition
 
@@ -34,7 +35,7 @@ var currentModel
 var currentGround
 
 
-function createTurnAnimation(that, name, frame){
+function createTurnAnimation(that, name, frame) {
     that.anims.create({
         key: name + '_turn',
         frames: [{
@@ -45,7 +46,7 @@ function createTurnAnimation(that, name, frame){
     });
 }
 
-function createDeathAnimation(that, name, frame){
+function createDeathAnimation(that, name, frame) {
     that.anims.create({
         key: name + '_death',
         frames: [{
@@ -57,9 +58,9 @@ function createDeathAnimation(that, name, frame){
 }
 
 
-function createMoveAnimation(that, direction, name, frame_from, frame_to){
+function createMoveAnimation(that, direction, name, frame_from, frame_to) {
     that.anims.create({
-        key: name +'_' + direction,
+        key: name + '_' + direction,
         frames: that.anims.generateFrameNumbers(name, {
             start: frame_from,
             end: frame_to
@@ -69,11 +70,23 @@ function createMoveAnimation(that, direction, name, frame_from, frame_to){
     });
 }
 
-function createTree(rnd, x){
-    switch(rnd) {
+function createZielAnimation(that) {
+    that.anims.create({
+        key: 'ziel',
+        frames: that.anims.generateFrameNumbers('ziel', {
+            start: 0,
+            end: 1
+        }),
+        frameRate: 5,
+        repeat: -1
+    });
+}
+
+function createTree(rnd, x) {
+    switch (rnd) {
         case 1:
             scale = 0.5
-            tree = trees.create(x, 650, 'tree0')
+            tree = trees.create(x, 700, 'tree0')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -81,8 +94,8 @@ function createTree(rnd, x){
             tree.body.y = tree.y - tree.height * scale / 2
             break;
         case 2:
-            scale = 0.5
-            tree = trees.create(x, 640, 'tree1')
+            scale = 0.6
+            tree = trees.create(x, 600, 'tree1')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -90,8 +103,8 @@ function createTree(rnd, x){
             tree.body.y = tree.y - tree.height * scale / 2
             break;
         case 3:
-            scale = 0.5
-            tree = trees.create(x, 620, 'tree2')
+            scale = 0.4
+            tree = trees.create(x, 705, 'tree2')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -101,15 +114,15 @@ function createTree(rnd, x){
     }
 }
 
-function movePlayer(that, direction, speed){
-    if('left' == direction){
+function movePlayer(that, direction, speed) {
+    if ('left' == direction) {
         speed = speed * -1;
     }
 
     if (keyObkSpace.isDown) {
         switch (that.currentModel.name) {
             case 'Ente':
-                if(that.currentGround.texture.key == 'ground' && currentPlayer.body.touching.down){
+                if (that.currentGround.texture.key == 'ground' && currentPlayer.body.touching.down) {
                     currentPlayer.setVelocityX(0);
                 }
                 currentPlayer.anims.play(that.currentModel.supermodel + '_swim_' + direction, true);
@@ -125,10 +138,9 @@ function movePlayer(that, direction, speed){
 
         if (currentPlayer.getCenter().x > 100 || currentPlayer.getCenter().x < 1200) {
             currentPlayer.setVelocityX(speed);
-        }
-        else {
+        } else {
             currentPlayer.setVelocityX(0);
-            if(direction == 'left'){
+            if (direction == 'left') {
                 background.tilePositionX -= 2
             } else {
                 background.tilePositionX += 2
@@ -138,12 +150,16 @@ function movePlayer(that, direction, speed){
     }
 }
 
-function die(that){
+function die(that) {
     currentPlayer.anims.play(that.currentModel.name + '_death');
 }
 
+function win(that) {
+    currentPlayer.anims.play(that.currentModel.name + '_turn');
+}
 
-function moveGround(speed){
+
+function moveGround(speed) {
     platforms.getChildren().forEach((c) => {
         if (c instanceof Phaser.GameObjects.Sprite) {
             c.x = c.x + speed
@@ -156,9 +172,11 @@ function moveGround(speed){
             t.body.x = t.body.x + speed
         }
     })
+    ziel.x = ziel.x + speed
+    ziel.body.x = ziel.body.x + speed;
 }
 
-function moveDarkness(speed){
+function moveDarkness(speed) {
     darkness.getChildren()[0].x = darkness.getChildren()[0].x + speed
     darkness.getChildren()[0].body.x = darkness.getChildren()[0].body.x + speed
 }
@@ -169,21 +187,25 @@ function hitDarkness(player, darkness) {
 
 function detectGround(player, ground) {
     this.currentGround = ground;
-    if(ground.texture.key == 'water' && player.texture.key != 'Ente'){
+    if (ground.texture.key == 'water' && player.texture.key != 'Ente') {
         this.leben -= 1
         player.setX(player.x - 100)
     }
+}
+
+function gewonnen(player, ziel) {
+    this.spielAmLaufen = false
 }
 
 //Funktion um Bilder/Sprites im Voraus zu laden
 function preload() {
     this.load.image('sky', 'assets/background.png');
     this.load.image('ground', 'assets/platform.png');
-    this.load.image('water','assets/water.png')
-    this.load.image('darkness','assets/darkness2.png')
-    this.load.image('tree0','assets/Bank.png')
-    this.load.image('tree1','assets/laterne.png')
-    this.load.image('tree2','assets/eimer.png')
+    this.load.image('water', 'assets/water.png')
+    this.load.image('darkness', 'assets/darkness2.png')
+    this.load.image('tree0', 'assets/Bank.png')
+    this.load.image('tree1', 'assets/laterne.png')
+    this.load.image('tree2', 'assets/eimer.png')
 
     this.enteModel = {
         name: 'Ente',
@@ -205,6 +227,7 @@ function preload() {
     }
 
     this.leben = 3;
+    this.spielAmLaufen = true;
 
     this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
         frameWidth: 62,
@@ -222,6 +245,10 @@ function preload() {
         frameWidth: 95,
         frameHeight: 70
     });
+    this.load.spritesheet('ziel', 'assets/ziel.png', {
+        frameWidth: 41,
+        frameHeight: 100
+    });
 }
 
 //##############
@@ -235,25 +262,28 @@ function create() {
     //------PLATFORMEN&BODEN-----//
     platforms = this.physics.add.staticGroup();
     trees = this.physics.add.staticGroup();
+    ziele = this.physics.add.staticGroup();
 
+    anzahlBodenplatten = 4
 
-    for (let i = 0; i < 20; i++) {
-        if(i == 0){
-            platforms.create(200 + (400 * i), 795-16, 'ground')
+    for (let i = 0; i < anzahlBodenplatten; i++) {
+        if (i == 0) {
+            platforms.create(200 + (400 * i), 795 - 16, 'ground')
         } else {
-            if(Math.random() < 0.4){
-                platforms.create(200 + (400 * i), 795-16, 'water')
+            if (Math.random() < 0.4) {
+                platforms.create(200 + (400 * i), 795 - 16, 'water')
             } else {
                 xValue = 200 + (400 * i)
                 xTreeValue = Phaser.Math.Between(xValue - 200, xValue + 200)
-                rnd = Phaser.Math.Between(0,2)
+                rnd = Phaser.Math.Between(0, 2)
 
                 createTree(rnd, xTreeValue)
 
-                platforms.create(xValue, 795-16, 'ground')
+                platforms.create(xValue, 795 - 16, 'ground')
             }
         }
-      }
+    }
+    ziel = ziele.create(anzahlBodenplatten * 400-60, 650, 'ziel');
 
 
     //platforms.create(600, 400, 'ground');
@@ -268,7 +298,10 @@ function create() {
     currentPlayer = this.physics.add.sprite(200, 650, this.currentModel.name);
 
     //------LEBEN------//
-    lebenLabel = this.add.text(16,16, 'Leben: ' + this.leben, { fontSize: '32px', fill: '#000' })
+    lebenLabel = this.add.text(16, 16, 'Leben: ' + this.leben, {
+        fontSize: '32px',
+        fill: '#000'
+    })
 
     //Bounce bewirkt, dass der Player kurz 'hüpft' wenn er landet
     currentPlayer.setBounce(0.2);
@@ -308,11 +341,15 @@ function create() {
     createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
 
     createMoveAnimation(this, 'swim_right', this.enteModel.name, 11, 12)
-    createMoveAnimation(this, 'swim_left',  this.enteModel.name, 9, 10)
+    createMoveAnimation(this, 'swim_left', this.enteModel.name, 9, 10)
+
+    createZielAnimation(this);
 
     this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
     this.physics.add.collider(currentPlayer, trees)
     this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
+    this.physics.add.collider(platforms, ziel);
+    this.physics.add.collider(currentPlayer, ziel, gewonnen, null, this);
 
     //Eingebauter Keyboard Manager
     cursors = this.input.keyboard.createCursorKeys();
@@ -329,9 +366,10 @@ function create() {
 ///UPDATE
 //##############
 function update() {
+    ziel.anims.play('ziel', true);
     lebenLabel.setText('Leben: ' + this.leben)
 
-    if (this.leben > 0) {
+    if (this.leben > 0 && this.spielAmLaufen) {
         moveDarkness(0.5);
         if (cursors.left.isDown) {
             background.tilePositionX -= 0.5
@@ -411,7 +449,14 @@ function update() {
             this.currentModel = this.katzeModel
         }
     } else {
-        currentPlayer.setVelocityX(0);
-        die(this)
+        if(leben <= 0){
+            currentPlayer.setVelocityX(0);
+            die(this)
+        }
+        if(this.spielAmLaufen == false){
+            currentPlayer.setVelocityX(0);
+            lebenLabel.setText('GEWONNEN :)')
+            win(this)
+        }
     }
 }
