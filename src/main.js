@@ -180,9 +180,9 @@ function preload() {
     this.load.image('ground', 'assets/platform.png');
     this.load.image('water','assets/water.png')
     this.load.image('darkness','assets/darkness2.png')
-    this.load.image('tree0','assets/tree.png')
-    this.load.image('tree1','assets/tree1.png')
-    this.load.image('tree2','assets/tree2.png')
+    this.load.image('tree0','assets/Bank.png')
+    this.load.image('tree1','assets/laterne.png')
+    this.load.image('tree2','assets/eimer.png')
 
     this.enteModel = {
         name: 'Ente',
@@ -205,21 +205,21 @@ function preload() {
 
     this.leben = 3;
 
-    this.load.spritesheet(this.enteModel.name, 'assets/ente2.png', {
-        frameWidth: 57.2,
+    this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
+        frameWidth: 62,
         frameHeight: 70
     });
-    this.load.spritesheet(this.affeModel.name, 'assets/affe2.png', {
-        frameWidth: 42.75,
+    this.load.spritesheet(this.affeModel.name, 'assets/affe.png', {
+        frameWidth: 50,
         frameHeight: 70
     });
     this.load.spritesheet(this.katzeModel.name, 'assets/katze.png', {
-        frameWidth: 98.6,
+        frameWidth: 102,
         frameHeight: 70
     });
-    this.load.spritesheet(this.katzeModel.supermodel, 'assets/super_cat.png', {
-        frameWidth: 77,
-        frameHeight: 60
+    this.load.spritesheet(this.katzeModel.supermodel, 'assets/supercat.png', {
+        frameWidth: 95,
+        frameHeight: 70
     });
 }
 
@@ -297,12 +297,12 @@ function create() {
     createMoveAnimation(this, 'right', this.enteModel.name, 5, 8);
     createMoveAnimation(this, 'right', this.affeModel.name, 5, 8);
     createMoveAnimation(this, 'right', this.katzeModel.name, 5, 8);
-    createMoveAnimation(this, 'right', this.katzeModel.supermodel, 5, 8);
+    createMoveAnimation(this, 'right', this.katzeModel.supermodel, 3, 5);
 
     createMoveAnimation(this, 'left', this.enteModel.name, 0, 3);
     createMoveAnimation(this, 'left', this.affeModel.name, 0, 3);
     createMoveAnimation(this, 'left', this.katzeModel.name, 0, 3);
-    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 3);
+    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 2);
 
     createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
 
