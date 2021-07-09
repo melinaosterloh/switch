@@ -72,11 +72,11 @@ function createMoveAnimation(that, direction, name, frame_from, frame_to){
 function createTree(rnd, x){
     switch(rnd) {
         case 1:
-            scale = 0.25
+            scale = 0.5
             tree = trees.create(x, 650, 'tree0')
             tree.setScale(scale)
-            tree.body.width = tree.body.width * scale  
-            tree.body.height = tree.body.height * scale 
+            tree.body.width = tree.body.width * scale
+            tree.body.height = tree.body.height * scale
             tree.body.x = tree.x - tree.width * scale / 2;
             tree.body.y = tree.y - tree.height * scale / 2
             break;
@@ -84,8 +84,8 @@ function createTree(rnd, x){
             scale = 0.5
             tree = trees.create(x, 640, 'tree1')
             tree.setScale(scale)
-            tree.body.width = tree.body.width * scale  
-            tree.body.height = tree.body.height * scale 
+            tree.body.width = tree.body.width * scale
+            tree.body.height = tree.body.height * scale
             tree.body.x = tree.x - tree.width * scale / 2;
             tree.body.y = tree.y - tree.height * scale / 2
             break;
@@ -93,8 +93,8 @@ function createTree(rnd, x){
             scale = 0.5
             tree = trees.create(x, 620, 'tree2')
             tree.setScale(scale)
-            tree.body.width = tree.body.width * scale  
-            tree.body.height = tree.body.height * scale 
+            tree.body.width = tree.body.width * scale
+            tree.body.height = tree.body.height * scale
             tree.body.x = tree.x - tree.width * scale / 2;
             tree.body.y = tree.y - tree.height * scale / 2
             break;
@@ -141,6 +141,7 @@ function movePlayer(that, direction, speed){
 function die(that){
     currentPlayer.anims.play(that.currentModel.name + '_death');
 }
+
 
 function moveGround(speed){
     platforms.getChildren().forEach((c) => {
@@ -243,7 +244,7 @@ function create() {
             if(Math.random() < 0.4){
                 platforms.create(200 + (400 * i), 795-16, 'water')
             } else {
-                xValue = 200 + (400 * i)    
+                xValue = 200 + (400 * i)
                 xTreeValue = Phaser.Math.Between(xValue - 200, xValue + 200)
                 rnd = Phaser.Math.Between(0,2)
 
