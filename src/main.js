@@ -46,7 +46,7 @@ function createTurnAnimation(that, name, frame) {
     });
 }
 
-function createDeathAnimation(that, name, frame) {
+function createDeathAnimation(that, name, frame){
     that.anims.create({
         key: name + '_death',
         frames: [{
@@ -76,9 +76,9 @@ function createZielAnimation(that) {
         key: 'ziel',
         frames: that.anims.generateFrameNumbers('ziel', {
             start: 0,
-            end: 1
+            end: 3
         }),
-        frameRate: 5,
+        frameRate: 4,
         repeat: -1
     });
 }
@@ -87,7 +87,7 @@ function createTree(rnd, x) {
     switch (rnd) {
         case 1:
             scale = 0.5
-            tree = trees.create(x, 700, 'tree0')
+            tree = trees.create(x, 705, 'tree0')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -246,8 +246,8 @@ function preload() {
         frameWidth: 95,
         frameHeight: 70
     });
-    this.load.spritesheet('ziel', 'assets/ziel.png', {
-        frameWidth: 41,
+    this.load.spritesheet('ziel', 'assets/ziel2.png', {
+        frameWidth: 44,
         frameHeight: 100
     });
 }
@@ -265,12 +265,14 @@ function create() {
     trees = this.physics.add.staticGroup();
     ziele = this.physics.add.staticGroup();
 
-    anzahlBodenplatten = 8
+    anzahlBodenplatten = 7
 
     for (let i = 0; i <= anzahlBodenplatten; i++) {
         if (i == 0) {
             platforms.create(200 + (400 * i), 795 - 16, 'ground')
-        } else {
+        } else if (i ==(anzahlBodenplatten-3)) {
+            platforms.create(200 + (400 * i), 795 - 16, 'ground')
+            } else {
             if (Math.random() < 0.3) {
                 platforms.create(200 + (400 * i), 795 - 16, 'water')
             } else {
@@ -290,7 +292,7 @@ function create() {
         }
     }
 
-    ziel = ziele.create(anzahlBodenplatten * 400-60, 650, 'ziel');
+    ziel = ziele.create((anzahlBodenplatten-2) * 400-60, 650, 'ziel');
 
 
     //platforms.create(600, 400, 'ground');
@@ -338,12 +340,12 @@ function create() {
     createMoveAnimation(this, 'right', this.enteModel.name, 5, 8);
     createMoveAnimation(this, 'right', this.affeModel.name, 5, 8);
     createMoveAnimation(this, 'right', this.katzeModel.name, 5, 8);
-    createMoveAnimation(this, 'right', this.katzeModel.supermodel, 3, 5);
+    createMoveAnimation(this, 'right', this.katzeModel.supermodel, 0, 5);
 
     createMoveAnimation(this, 'left', this.enteModel.name, 0, 3);
     createMoveAnimation(this, 'left', this.affeModel.name, 0, 3);
     createMoveAnimation(this, 'left', this.katzeModel.name, 0, 3);
-    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 2);
+//    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 2);
 
     createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
 
@@ -364,6 +366,7 @@ function create() {
     keyObjA = this.input.keyboard.addKey('a'); // Get key object
     keyObjK = this.input.keyboard.addKey('k'); // Get key object
     keyObkSpace = this.input.keyboard.addKey('space'); // Get key object
+    keyObkEnter = this.input.keyboard.addKey('enter'); // Get key object
 
     //PUNKTE BZW. LICHTPUNKTE HINZUFÜGEN ZUM SAMMELN
 
@@ -405,7 +408,7 @@ function update() {
                     case 'Affe':
                         currentPlayer.setVelocityX(0);
                         if (this.currentModel.jumping) {
-                            currentPlayer.anims.play(this.currentModel.name + '_jump');
+                        currentPlayer.anims.play(this.currentModel.name + '_jump');
                         }
                         break;
                     case 'Katze':
@@ -455,16 +458,24 @@ function update() {
         if (keyObjK.isDown) {
             this.currentModel = this.katzeModel
         }
+
     } else {
-        if(leben <= 0){
+
             currentPlayer.setVelocityX(0);
             die(this)
-            currentPlayer.anims.play(this.currentModel.name + '_death');
-        }
+
         if(this.spielAmLaufen == false){
-            currentPlayer.setVelocityX(0);
-            lebenLabel.setText('GEWONNEN :)')
-            win(this)
+
+
+                currentPlayer.setVelocityX(0);
+                lebenLabel.setText('Press "ENTER"                    GEWONNEN :)')
+                win(this)
+
+                if (keyObkEnter.isDown) {
+                    this.scene.start('levelTwo')
+                }
+
+
         }
     }
 }
