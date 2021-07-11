@@ -70,26 +70,15 @@ function createMoveAnimation(that, direction, name, frame_from, frame_to) {
     });
 }
 
+
 function createZielAnimation(that) {
     that.anims.create({
         key: 'ziel',
         frames: that.anims.generateFrameNumbers('ziel', {
             start: 0,
-            end: 3
-        }),
-        frameRate: 4,
-        repeat: -1
-    });
-}
-
-function createGhostAnimation(that) {
-    that.anims.create({
-        key: 'ghost',
-        frames: that.anims.generateFrameNumbers('ghost', {
-            start: 0,
             end: 1
         }),
-        frameRate: 4,
+        frameRate: 5,
         repeat: -1
     });
 }
@@ -98,7 +87,7 @@ function createTree(rnd, x) {
     switch (rnd) {
         case 1:
             scale = 0.5
-            tree = trees.create(x, 705, 'tree0')
+            tree = trees.create(x, 700, 'tree0')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -197,10 +186,8 @@ function hitDarkness(player, darkness) {
     this.leben = 0;
 }
 
-function detectGround(player, ground, that, speed) {
+function detectGround(player, ground) {
     this.currentGround = ground;
-
-
     if (ground.texture.key == 'water' && player.texture.key != 'Ente') {
         this.leben -= 1
         player.setX(player.x - 100)
@@ -214,28 +201,28 @@ function gewonnen(player, ziel) {
 //Funktion um Bilder/Sprites im Voraus zu laden
 function preload() {
     this.load.image('sky', 'assets/background.png');
-    this.load.image('darkness', 'assets/darkness2.png')
+    this.load.image('ground', 'assets/platform.png');
+    this.load.image('water', 'assets/water.png')
+    this.load.image('darkness', 'assets/darkness.png')
     this.load.image('tree0', 'assets/Bank.png')
     this.load.image('tree1', 'assets/laterne.png')
     this.load.image('tree2', 'assets/eimer.png')
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('water', 'assets/water.png')
 
     this.enteModel = {
         name: 'Ente',
-        speed: 100,
+        speed: 90,
         jumping: false,
         supermodel: 'Ente'
     }
     this.affeModel = {
         name: 'Affe',
-        speed: 100,
+        speed: 110,
         jumping: false,
         supermodel: 'Affe'
     }
     this.katzeModel = {
         name: 'Katze',
-        speed: 100,
+        speed: 110,
         jumping: false,
         supermodel: 'SuperCat'
     }
@@ -259,14 +246,10 @@ function preload() {
         frameWidth: 95,
         frameHeight: 70
     });
-    this.load.spritesheet('ziel', 'assets/ziel2.png', {
-        frameWidth: 44,
+    this.load.spritesheet('ziel', 'assets/ziel.png', {
+        frameWidth: 41,
         frameHeight: 100
     });
-    this.load.spritesheet('ghost', 'assets/ghost.png', {
-            frameWidth: 117,
-            frameHeight: 150
-        });
 }
 
 //##############
@@ -282,11 +265,9 @@ function create() {
     trees = this.physics.add.staticGroup();
     ziele = this.physics.add.staticGroup();
 
-
-
     anzahlBodenplatten = 8
 
-    for (let i = 0; i < anzahlBodenplatten; i++) {
+    for (let i = 0; i <= anzahlBodenplatten; i++) {
         if (i == 0) {
             platforms.create(200 + (400 * i), 795 - 16, 'ground')
         } else {
@@ -299,6 +280,7 @@ function create() {
                 } else {
                     xTreeValue = Phaser.Math.Between(xValue - 200, xValue + 200)
                 }
+
                 rnd = Phaser.Math.Between(0, 3)
 
                 createTree(rnd, xTreeValue)
@@ -307,6 +289,7 @@ function create() {
             }
         }
     }
+
     ziel = ziele.create(anzahlBodenplatten * 400-60, 650, 'ziel');
 
 
@@ -315,9 +298,7 @@ function create() {
     //platforms.create(750, 220, 'ground');
 
     darkness = this.physics.add.staticGroup();
-    darkness.create(-650, 702 / 2 + 60, 'darkness')
-    ghosts = this.physics.add.group();
-    ghosts.create(-100, 500 / 2 +60, 'ghosts');
+    darkness.create(-650, 630 / 2 + 60, 'darkness')
 
     //------PLAYER-----//
     this.currentModel = this.enteModel
@@ -326,7 +307,7 @@ function create() {
     //------LEBEN------//
     lebenLabel = this.add.text(16, 16, 'Leben: ' + this.leben, {
         fontSize: '32px',
-        fill: '#000'
+        fill: 'white'
     })
 
     //Bounce bewirkt, dass der Player kurz 'hüpft' wenn er landet
@@ -339,7 +320,7 @@ function create() {
     //------KAMERA-----//
     //Kamera folgt Figur
     this.cameras.main.setBounds(0, 0, 1593, 795);
-    this.physics.world.setBounds(0, 0, 1000, 795);
+    this.physics.world.setBounds(0, 0, 1200, 795);
     this.cameras.main.startFollow(currentPlayer, true, 0.5, 0.5);
 
 
@@ -398,7 +379,7 @@ function update() {
     if (this.leben > 0 && this.spielAmLaufen) {
         moveDarkness(0.5);
         if (cursors.left.isDown) {
-            background.tilePositionX -= 0.5
+//            background.tilePositionX -= 0.5
 
             moveGround(2);
             movePlayer(this, 'left', this.currentModel.speed)
@@ -424,7 +405,7 @@ function update() {
                     case 'Affe':
                         currentPlayer.setVelocityX(0);
                         if (this.currentModel.jumping) {
-                            currentPlayer.anims.play('Affe_jump');
+                            currentPlayer.anims.play(this.currentModel.name + '_jump');
                         }
                         break;
                     case 'Katze':
@@ -448,17 +429,17 @@ function update() {
                 if (keyObkSpace.isDown) {
                     switch (this.currentModel.name) {
                         case 'Ente':
-                            currentPlayer.setVelocityY(-330); //Y weil nach oben
+                            currentPlayer.setVelocityY(-150); //Y weil nach oben
                             break;
                         case 'Affe':
-                            currentPlayer.setVelocityY(-330 * 1.4); //Y weil nach oben
+                            currentPlayer.setVelocityY(-150 * 3.1); //Y weil nach oben
                             break;
                         case 'Katze':
-                            currentPlayer.setVelocityY(-330); //Y weil nach oben
+                            currentPlayer.setVelocityY(-150); //Y weil nach oben
                             break;
                     }
                 } else {
-                    currentPlayer.setVelocityY(-330); //Y weil nach oben
+                    currentPlayer.setVelocityY(-150); //Y weil nach oben
                 }
             }
         }
@@ -478,6 +459,7 @@ function update() {
         if(leben <= 0){
             currentPlayer.setVelocityX(0);
             die(this)
+            currentPlayer.anims.play(this.currentModel.name + '_death');
         }
         if(this.spielAmLaufen == false){
             currentPlayer.setVelocityX(0);
