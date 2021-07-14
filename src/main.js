@@ -355,7 +355,7 @@ function create() {
     createZielAnimation(this);
 
     this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
-    this.physics.add.collider(currentPlayer, trees)
+    this.physics.add.collider(currentPlayer, trees);
     this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
     this.physics.add.collider(platforms, ziel);
     this.physics.add.collider(currentPlayer, ziel, gewonnen, null, this);
@@ -390,12 +390,17 @@ function update() {
 
         //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
         else if (cursors.right.isDown) {
+        console.log("Lauf");
 
             background.tilePositionX += 0.5
             moveDarkness(-1);
             moveGround(-2);
             movePlayer(this, 'right', this.currentModel.speed)
         }
+        else if (cursors.right.isDown && keyObkSpace.isDown) {
+
+                    console.log("Knall");
+                }
 
         //Start-Stop-Animation
         else {
