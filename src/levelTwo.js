@@ -199,6 +199,9 @@ function gewonnen(player, ziel) {
 }
 
 //Funktion um Bilder/Sprites im Voraus zu laden
+//##############
+///PRELOAD
+//##############
 function preload() {
     this.load.image('sky', 'assets/background.png');
     this.load.image('ground', 'assets/platform.png');
@@ -292,10 +295,6 @@ function create() {
 
     ziel = ziele.create((anzahlBodenplatten-2) * 400-60, 650, 'ziel');
 
-
-    //platforms.create(600, 400, 'ground');
-    //platforms.create(50, 250, 'ground');
-    //platforms.create(750, 220, 'ground');
 
     darkness = this.physics.add.staticGroup();
     darkness.create(-650, 630 / 2 + 60, 'darkness')
