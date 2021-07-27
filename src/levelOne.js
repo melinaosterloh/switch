@@ -342,7 +342,7 @@ function create() {
     trees = this.physics.add.staticGroup();
     ziele = this.physics.add.staticGroup();
 
-    scoreText = this.add.text(16, 50, 'Score: 0', { fontSize: '32px', fill: 'white'});
+
 
     anzahlBodenplatten = 20
 
@@ -404,6 +404,8 @@ function create() {
         fontSize: '32px',
         fill: 'white'
     })
+
+    scoreText = this.add.text(16, 50, 'Score: 0', { fontSize: '32px', fill: 'white'});
 
     //Bounce bewirkt, dass der Player kurz 'hüpft' wenn er landet
     currentPlayer.setBounce(0.2);
@@ -583,6 +585,7 @@ function update() {
 
             currentPlayer.setVelocityX(0);
             die(this)
+
 
         if(this.spielAmLaufen == false){
 
