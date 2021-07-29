@@ -3,10 +3,17 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>SWITCH-Escape the Dark</title>
+    <title>SWITCH! - Escape the Dark</title>
+    <link rel="icon" type="image/png" href="assets/switchLogo.png">
     <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
 
+    <script src="mainMenu.js" type="text/javascript"></script>
+    <script src="levelMenu.js" type="text/javascript"></script>
+    <script src="control.js" type="text/javascript"></script>
+    <script src="credits.js" type="text/javascript"></script>
     <script src="levelOne.js" type="text/javascript"></script>
+    <script src="levelTwo.js" type="text/javascript"></script>
+    <script src="levelThree.js" type="text/javascript"></script>
     <!--<script src="levelTwo.js" type="text/javascript"></script>
     <script src="main.js" type="text/javascript"></script>-->
     <style type="text/css">
@@ -22,6 +29,28 @@
 </head>
 
 <body>
+<script>
+            var config = {
+            type: Phaser.AUTO,
+            width: 1400,
+            height: 707,
+            backgroundColor: '#006060',
+            physics: {
+                    default: 'arcade',
+                    arcade: {
+                        gravity: { y: 300 },
+                        debug: false
+                    }
+                },
+            scale: {
+                autoCenter: true,
+                //mode: Phaser.Scale.FIT,
+                //autoCenter: Phaser.Scale.CENTER_BOTH
+            },
+            scene: [mainMenu, levelMenu, control, credits, levelOne, levelTwo, levelThree]
+        };
 
+        var game = new Phaser.Game(config);
+    </script>
 </body>
 </html>
