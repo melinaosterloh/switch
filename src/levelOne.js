@@ -557,7 +557,7 @@ function createTree(rnd, x) {
     switch (rnd) {
         case 1:
             scale = 0.5
-            var tree = trees.create(x, 705, 'tree0')
+            var tree = trees.create(x, 620, 'tree0')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -566,7 +566,7 @@ function createTree(rnd, x) {
             break;
         case 2:
             scale = 0.6
-            var tree = trees.create(x, 600, 'tree1')
+            var tree = trees.create(x, 510, 'tree1')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -575,7 +575,7 @@ function createTree(rnd, x) {
             break;
         case 3:
             scale = 0.4
-            var tree = trees.create(x, 710, 'tree2')
+            var tree = trees.create(x, 625, 'tree2')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale

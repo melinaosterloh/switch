@@ -15,6 +15,8 @@ class levelMenu extends Phaser.Scene {
         this.load.image('bgLevels', 'assets/backgroundLevels.png');
         //this.load.image('fence', 'assets/zaun.png')
         this.load.image('level1', 'assets/level1.png')
+        this.load.image('level2', 'assets/level2.png')
+        this.load.image('level3', 'assets/level3.png')
         this.load.image('home', 'assets/buttonHome.png')
         this.load.image('soundOn', 'assets/tonAn.png')
 
@@ -66,34 +68,34 @@ class levelMenu extends Phaser.Scene {
             });
 
         // Steuerung Button
-        var buttonLevel1 = this.add.image(356, 298, 'level1').setInteractive({
-            useHandCursor: true
-          });
-        buttonLevel1.on('pointerdown', function(event){
-            this.scene.start('levelOne');
-            music.stop();
-            console.log("Level 1 wird gestartet")
-         }, this);
+                var buttonLevel1 = this.add.image(356, 298, 'level1').setInteractive({
+                    useHandCursor: true
+                  });
+                buttonLevel1.on('pointerdown', function(event){
+                    this.scene.start('levelOne');
+                    music.stop();
+                    console.log("Level 1 wird gestartet")
+                 }, this);
 
-        // Steuerung Button
-        var buttonLevel2 = this.add.image(1021, 298, 'level1').setInteractive({
-            useHandCursor: true
-          });
-        buttonLevel2.on('pointerdown', function(event){
-            this.scene.start('levelTwo');
-            music.stop();
-            console.log("Level 2 wird gestartet")
-         }, this);
+                // Steuerung Button
+                var buttonLevel2 = this.add.image(1021, 298, 'level2').setInteractive({
+                    useHandCursor: true
+                  });
+                buttonLevel2.on('pointerdown', function(event){
+                    this.scene.start('levelTwo');
+                    music.stop();
+                    console.log("Level 2 wird gestartet")
+                 }, this);
 
-         // Steuerung Button
-        var buttonLevel3 = this.add.image(682, 564, 'level1').setInteractive({
-            useHandCursor: true
-          });
-        buttonLevel3.on('pointerdown', function(event){
-            this.scene.start('levelThree');
-            music.stop();
-            console.log("Level 3 wird gestartet")
-         }, this);
+                 // Steuerung Button
+                var buttonLevel3 = this.add.image(682, 564, 'level3').setInteractive({
+                    useHandCursor: true
+                  });
+                buttonLevel3.on('pointerdown', function(event){
+                    this.scene.start('levelThree');
+                    music.stop();
+                    console.log("Level 3 wird gestartet")
+                }, this);
 
     }
 }
