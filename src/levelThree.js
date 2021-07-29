@@ -67,6 +67,10 @@ preload() {
     this.load.image('home', 'assets/buttonHome.png')
     this.load.image('soundOn', 'assets/tonAn.png')
 
+    this.load.audio('levelSound', ['assets/levelSound.mp3'])
+    this.load.audio('buttonClick', ['assets/buttonClick.mp3'])
+    this.load.audio('jumpSound', ['assets/jumpSound.mp3'])
+
     this.enteModel = {
         name: 'Ente',
         speed: 50,
@@ -131,19 +135,48 @@ create() {
     //x und y parameter werden übergeben (Halbiert der gesamten Größe)
     background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky');
 
+    // Hintergrundmusik hinzufügen 
+    var levelMusic = this.sound.add('levelSound', { loop: true });
+    levelMusic.play();
+
+    // Sound für Button Click hinzufügen
+    var buttonClick = this.sound.add('buttonClick', { loop: false });
+
+    // Sound wenn einer der Spieler springt
+    jumpSound = this.sound.add('jumpSound', {loop: false});
+
     // Button zum Hauptmenü zurück
-    var buttonHome = this.add.image(1288, 35, 'home').setInteractive();
+    var buttonHome = this.add.image(1288, 35, 'home').setInteractive({
+        useHandCursor: true
+      });
     buttonHome.on('pointerdown', function(event){ // Start game on click
-        this.scene.stop('levelMenu');
-       this.scene.start('mainMenu');
-       console.log("Zurück zum Hauptmenü")
+        buttonClick.play();
+        this.scene.stop('levelThree');
+        this.scene.start('mainMenu');
+        levelMusic.stop();
+        console.log("Zurück zum Hauptmenü")
     }, this);
 
-    // Button Sound an/Sound aus
-    var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive();
+    // Button Sound an/Sound aus 
+    var clickCount = 0;
+    var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
+        useHandCursor: true
+      });
     buttonSound.on('pointerdown', function(event){
-        console.log("Sound an/aus")
-     }, this);
+        if (clickCount == 0) {
+            buttonClick.play();
+            buttonClick.play();
+            levelMusic.stop();
+            clickCount = 1;
+            console.log("Sound aus")
+        } else {
+            buttonClick.play();
+            buttonClick.play();
+            levelMusic.play();
+            clickCount = 0;
+            console.log("Sound an")
+        }
+        });
 
     //------PLATFORMEN&BODEN-----//
     platforms = this.physics.add.staticGroup();
@@ -341,6 +374,7 @@ update() {
             this.currentModel.jumping = false
 
             if (cursors.up.isDown) {
+                jumpSound.play();
                 this.currentModel.jumping = true;
                 if (keyObkSpace.isDown) {
                     switch (this.currentModel.name) {
@@ -395,7 +429,10 @@ update() {
                 lebenLabel.setText('GEWONNEN :)')
                 win(this)
 
-
+                /* if (gameOver == true){
+                    data.menuMusicData.stop(); // Funktion, dass Musik bei Game over stoppt????
+                    return;
+                } */
 
 
         }
