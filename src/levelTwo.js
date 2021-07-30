@@ -34,6 +34,9 @@ var ghost
 var ghost2
 var anzahlBodenplatten
 
+var levelMusic
+var jumpSound
+
 var xTreeValue
 var xValue
 var rnd
@@ -50,15 +53,19 @@ class levelTwo extends Phaser.Scene {
 ///PRELOAD
 //##############
 preload() {
-    this.load.image('sky', 'assets/background.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('water', 'assets/water.png')
-    this.load.image('tree0', 'assets/Bank.png')
-    this.load.image('tree1', 'assets/laterne.png')
-    this.load.image('tree2', 'assets/eimer.png')
+    this.load.image('sky', 'assets/background_2.png');
+    this.load.image('ground', 'assets/strasse.png');
+    this.load.image('water', 'assets/pfueze.png')
+    this.load.image('tree0', 'assets/absperrung.png')
+    this.load.image('tree1', 'assets/ampel.png')
+    this.load.image('tree2', 'assets/absperrung2.png')
     this.load.image('light', 'assets/light.png')
     this.load.image('home', 'assets/buttonHome.png')
     this.load.image('soundOn', 'assets/tonAn.png')
+
+    this.load.audio('levelSound', ['assets/levelSound.mp3'])
+    this.load.audio('buttonClick', ['assets/buttonClick.mp3'])
+    this.load.audio('jumpSound', ['assets/jumpSound.mp3'])
 
     this.enteModel = {
         name: 'Ente',
@@ -124,19 +131,46 @@ create() {
     //x und y parameter werden übergeben (Halbiert der gesamten Größe)
     background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky');
 
+    // Hintergrundmusik hinzufügen 
+    levelMusic = this.sound.add('levelSound', { loop: true });
+    levelMusic.play();
+
+    // Sound für Button Click hinzufügen
+    var buttonClick = this.sound.add('buttonClick', { loop: false });
+
+    // Sound wenn einer der Spieler springt
+    jumpSound = this.sound.add('jumpSound', {loop: false});
+
     // Button zum Hauptmenü zurück
-    var buttonHome = this.add.image(1288, 35, 'home').setInteractive();
+    var buttonHome = this.add.image(1288, 35, 'home').setInteractive({
+        useHandCursor: true
+      });
     buttonHome.on('pointerdown', function(event){ // Start game on click
-        this.scene.stop('levelMenu');
-       this.scene.start('mainMenu');
-       console.log("Zurück zum Hauptmenü")
+        buttonClick.play();
+        this.scene.stop('levelTwo');
+        this.scene.start('mainMenu');
+        levelMusic.stop();
+        console.log("Zurück zum Hauptmenü")
     }, this);
 
-    // Button Sound an/Sound aus
-    var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive();
+    // Button Sound an/Sound aus 
+    var clickCount = 0;
+    var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
+        useHandCursor: true
+      });
     buttonSound.on('pointerdown', function(event){
-        console.log("Sound an/aus")
-     }, this);
+        if (clickCount == 0) {
+            buttonClick.play();
+            levelMusic.stop();
+            clickCount = 1;
+            console.log("Sound aus")
+        } else {
+            buttonClick.play();
+            levelMusic.play();
+            clickCount = 0;
+            console.log("Sound an")
+        }
+        });
 
     //------PLATFORMEN&BODEN-----//
     platforms = this.physics.add.staticGroup();
@@ -163,7 +197,7 @@ create() {
 
                 rnd = Phaser.Math.Between(0, 3)
 
-                createTree(rnd, xTreeValue)
+                createTree2(rnd, xTreeValue)
 
                 platforms.create(xValue, 707 - 16, 'ground')
             }
@@ -326,6 +360,7 @@ update() {
             this.currentModel.jumping = false
 
             if (cursors.up.isDown) {
+                jumpSound.play();
                 this.currentModel.jumping = true;
                 if (keyObkSpace.isDown) {
                     switch (this.currentModel.name) {
@@ -382,6 +417,7 @@ update() {
 
                 if (keyObkEnter.isDown){
                     this.scene.start('levelThree');
+                    levelMusic.stop();
                     console.log("Level 2 auf 3 wurde gewechselt!")
                 }
         }
@@ -476,11 +512,11 @@ function createGhostAnimation2(that) {
 }
 
 //Erstellen der Hindernisse
-function createTree(rnd, x) {
+function createTree2(rnd, x) {
     switch (rnd) {
         case 1:
             scale = 0.5
-            var tree = trees.create(x, 705, 'tree0')
+            var tree = trees.create(x, 610, 'tree0')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -489,7 +525,7 @@ function createTree(rnd, x) {
             break;
         case 2:
             scale = 0.6
-            var tree = trees.create(x, 600, 'tree1')
+            var tree = trees.create(x, 535, 'tree1')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -498,7 +534,7 @@ function createTree(rnd, x) {
             break;
         case 3:
             scale = 0.4
-            var tree = trees.create(x, 710, 'tree2')
+            var tree = trees.create(x, 625, 'tree2')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -535,8 +571,6 @@ function moveGroundLvlTwo(that, speed) {
     })
     ziel.x = ziel.x + speed
     ziel.body.x = ziel.body.x + speed;
-    info.x = info.x + speed
-    info2.x = info.x + speed
 }
 
 function moveDarkness(speed) {

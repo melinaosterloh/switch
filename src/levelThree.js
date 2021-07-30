@@ -17,8 +17,8 @@ var keyObkEnter
 var background
 var platforms
 var trees
-var ziel
-var ziele
+/*var ziel
+var ziele*/
 var lights
 var darknesses
 var darkness
@@ -54,18 +54,22 @@ class levelThree extends Phaser.Scene {
 ///PRELOAD
 //##############
 preload() {
-    this.load.image('sky', 'assets/background.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('water', 'assets/water.png')
+    this.load.image('sky', 'assets/background_3.png');
+    this.load.image('ground', 'assets/strasse.png');
+    this.load.image('water', 'assets/pfueze.png')
     this.load.image('meadow', 'assets/wiese.png')
     this.load.image('fence', 'assets/zaun.png')
-    this.load.image('tree0', 'assets/Bank.png')
+    this.load.image('tree0', 'assets/fahrrad.png')
     this.load.image('tree1', 'assets/laterne.png')
-    this.load.image('tree2', 'assets/eimer.png')
+    this.load.image('tree2', 'assets/busch.png')
     this.load.image('light', 'assets/light.png')
     this.load.image('house', 'assets/haus.png')
     this.load.image('home', 'assets/buttonHome.png')
     this.load.image('soundOn', 'assets/tonAn.png')
+
+    this.load.audio('levelSound', ['assets/levelSound.mp3'])
+    this.load.audio('buttonClick', ['assets/buttonClick.mp3'])
+    this.load.audio('jumpSound', ['assets/jumpSound.mp3'])
 
     this.enteModel = {
         name: 'Ente',
@@ -105,10 +109,10 @@ preload() {
         frameWidth: 95,
         frameHeight: 70
     });
-    this.load.spritesheet('ziel', 'assets/sun.png', {
+/*    this.load.spritesheet('ziel', 'assets/sun.png', {
         frameWidth: 750,
         frameHeight: 500
-    });
+    });*/
     this.load.spritesheet('darkness', 'assets/darknessSprite2.png', {
             frameWidth: 1464,
             frameHeight: 950
@@ -131,35 +135,64 @@ create() {
     //x und y parameter werden übergeben (Halbiert der gesamten Größe)
     background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky');
 
+    // Hintergrundmusik hinzufügen 
+    var levelMusic = this.sound.add('levelSound', { loop: true });
+    levelMusic.play();
+
+    // Sound für Button Click hinzufügen
+    var buttonClick = this.sound.add('buttonClick', { loop: false });
+
+    // Sound wenn einer der Spieler springt
+    jumpSound = this.sound.add('jumpSound', {loop: false});
+
     // Button zum Hauptmenü zurück
-    var buttonHome = this.add.image(1288, 35, 'home').setInteractive();
+    var buttonHome = this.add.image(1288, 35, 'home').setInteractive({
+        useHandCursor: true
+      });
     buttonHome.on('pointerdown', function(event){ // Start game on click
-        this.scene.stop('levelMenu');
-       this.scene.start('mainMenu');
-       console.log("Zurück zum Hauptmenü")
+        buttonClick.play();
+        this.scene.stop('levelThree');
+        this.scene.start('mainMenu');
+        levelMusic.stop();
+        console.log("Zurück zum Hauptmenü")
     }, this);
 
-    // Button Sound an/Sound aus
-    var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive();
+    // Button Sound an/Sound aus 
+    var clickCount = 0;
+    var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
+        useHandCursor: true
+      });
     buttonSound.on('pointerdown', function(event){
-        console.log("Sound an/aus")
-     }, this);
+        if (clickCount == 0) {
+            buttonClick.play();
+            buttonClick.play();
+            levelMusic.stop();
+            clickCount = 1;
+            console.log("Sound aus")
+        } else {
+            buttonClick.play();
+            buttonClick.play();
+            levelMusic.play();
+            clickCount = 0;
+            console.log("Sound an")
+        }
+        });
 
     //------PLATFORMEN&BODEN-----//
     platforms = this.physics.add.staticGroup();
     fences = this.physics.add.staticGroup();
     trees = this.physics.add.staticGroup();
-    ziele = this.physics.add.staticGroup();
+//    ziele = this.physics.add.staticGroup();
     houses = this.physics.add.staticGroup();
 
-    anzahlBodenplatten = 7
+    anzahlBodenplatten = 15
 
     for (let i = 0; i <= anzahlBodenplatten; i++) {
         if (i == 0) {
             platforms.create(200 + (400 * i), 707 - 16, 'ground')
         } else if (i >(anzahlBodenplatten-4)) {
             platforms.create(200 + (400 * i), 707 - 16, 'meadow')
-            fences.create(200 + (400 * i), 707 - 16, 'fence')
+            fences.create(200 + (400 * i), 647 - 16, 'fence')
             } else {
             if (Math.random() < 0.3) {
                 platforms.create(200 + (400 * i), 707 - 16, 'water')
@@ -173,14 +206,14 @@ create() {
 
                 rnd = Phaser.Math.Between(0, 3)
 
-                createTree(rnd, xTreeValue)
+                createTree3(rnd, xTreeValue)
 
                 platforms.create(xValue, 707 - 16, 'ground')
             }
         }
     }
-    house = houses.create((anzahlBodenplatten) * 400-100, 478,'house');
-    ziel = ziele.create((anzahlBodenplatten) * 400, 300, 'ziel');
+    house = houses.create((anzahlBodenplatten) * 400-100, 418,'house');
+//    ziel = ziele.create((anzahlBodenplatten) * 400, 300, 'ziel');
 
     lights = this.physics.add.group({
         key: 'light',
@@ -255,7 +288,7 @@ create() {
     createMoveAnimation(this, 'swim_right', this.enteModel.name, 11, 12)
     createMoveAnimation(this, 'swim_left', this.enteModel.name, 9, 10)
 
-    createZielAnimation(this);
+//    createZielAnimation(this);
     createDarknessAnimation(this);
     createGhostAnimation(this);
     createGhostAnimation2(this);
@@ -265,7 +298,7 @@ create() {
     this.physics.add.collider(fences, detectGround, null, this);
     this.physics.add.collider(currentPlayer, trees);
     this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
-    this.physics.add.collider(platforms, ziel);
+//    this.physics.add.collider(platforms, ziel);
     this.physics.add.collider(currentPlayer, house, gewonnen, null, this);
     this.physics.add.collider(darkness, fences, gewonnen, null, this);
     this.physics.add.collider(platforms, ghost);
@@ -291,7 +324,7 @@ create() {
 ///UPDATE
 //##############
 update() {
-    ziel.anims.play('ziel', true);
+//    ziel.anims.play('ziel', true);
     darkness.anims.play('darkness', true);
     ghost.anims.play('ghost', true);
     ghost2.anims.play('ghost2', true);
@@ -341,6 +374,7 @@ update() {
             this.currentModel.jumping = false
 
             if (cursors.up.isDown) {
+                jumpSound.play();
                 this.currentModel.jumping = true;
                 if (keyObkSpace.isDown) {
                     switch (this.currentModel.name) {
@@ -395,7 +429,10 @@ update() {
                 lebenLabel.setText('GEWONNEN :)')
                 win(this)
 
-
+                /* if (gameOver == true){
+                    data.menuMusicData.stop(); // Funktion, dass Musik bei Game over stoppt????
+                    return;
+                } */
 
 
         }
@@ -441,7 +478,7 @@ function createMoveAnimation(that, direction, name, frame_from, frame_to) {
     });
 }
 
-
+/*
 function createZielAnimation(that) {
     that.anims.create({
         key: 'ziel',
@@ -452,7 +489,7 @@ function createZielAnimation(that) {
         frameRate: 4,
         repeat: -1
     });
-}
+}*/
 
 function createDarknessAnimation(that) {
     that.anims.create({
@@ -490,11 +527,11 @@ function createGhostAnimation2(that) {
     });
 }
 
-function createTree(rnd, x) {
+function createTree3(rnd, x) {
     switch (rnd) {
         case 1:
             scale = 0.5
-            tree = trees.create(x, 705, 'tree0')
+            tree = trees.create(x, 605, 'tree0')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -503,7 +540,7 @@ function createTree(rnd, x) {
             break;
         case 2:
             scale = 0.6
-            tree = trees.create(x, 600, 'tree1')
+            tree = trees.create(x, 510, 'tree1')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -512,7 +549,7 @@ function createTree(rnd, x) {
             break;
         case 3:
             scale = 0.4
-            tree = trees.create(x, 710, 'tree2')
+            tree = trees.create(x, 630, 'tree2')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -558,8 +595,8 @@ function moveGroundLvlThree(that, speed) {
                 t.body.x = t.body.x + speed
             }
         })
-    ziel.x = ziel.x + speed
-    ziel.body.x = ziel.body.x + speed;
+/*    ziel.x = ziel.x + speed
+    ziel.body.x = ziel.body.x + speed;*/
 }
 
 function moveDarkness(speed) {
