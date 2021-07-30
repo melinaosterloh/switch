@@ -1,8 +1,11 @@
 // Level Eins im Park
 
 var enteModel;
+var duckSound
 var affeModel;
+var monkeySound
 var katzeModel
+var catSound
 var leben;
 var spielAmLaufen;
 
@@ -74,6 +77,10 @@ preload() {
     this.load.audio('jumpSound', ['assets/jumpSound.mp3'])
     this.load.audio('collectLight', ['assets/collectLight.mp3'])
     this.load.audio('lostLife', ['assets/lifeLost.mp3'])
+
+    this.load.audio('duckSound', ['assets/duck.mp3'])
+    this.load.audio('monkeySound', ['assets/monkey.mp3'])
+    this.load.audio('catSound', ['assets/cat.mp3'])
 
     this.enteModel = {
         name: 'Ente',
@@ -154,6 +161,11 @@ create() {
 
     // Sound wenn Spieler ein Leben verliert
     lostLife = this.sound.add('lostLife', {loop: false});
+
+    // Tiere kriegen einen Sound bei Aktivierung per Keyboard Taste
+    duckSound = this.sound.add('duckSound', {loop: false});
+    monkeySound = this.sound.add('monkeySound', {loop: false});
+    catSound = this.sound.add('catSound', {loop: false});
 
     // Button zum Hauptmenü zurück
     var buttonHome = this.add.image(1288, 35, 'home').setInteractive({
@@ -432,14 +444,17 @@ update() {
 
         if (keyObjE.isDown) {
             this.currentModel = this.enteModel
+            duckSound.play();
         }
 
         if (keyObjA.isDown) {
             this.currentModel = this.affeModel
+            monkeySound.play();
         }
 
         if (keyObjK.isDown) {
             this.currentModel = this.katzeModel
+            catSound.play();
         }
 
     } else {
