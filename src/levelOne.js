@@ -62,9 +62,9 @@ preload() {
     this.load.image('sky', 'assets/background.png')
     this.load.image('ground', 'assets/platform.png')
     this.load.image('water', 'assets/water.png')
-    this.load.image('tree0', 'assets/Bank.png')
-    this.load.image('tree1', 'assets/laterne.png')
-    this.load.image('tree2', 'assets/eimer.png')
+    this.load.image('bank', 'assets/Bank.png')
+    this.load.image('lantern', 'assets/laterne.png')
+    this.load.image('bin', 'assets/eimer.png')
     this.load.image('light', 'assets/light.png')
     this.load.image('home', 'assets/buttonHome.png')
     this.load.image('soundOn', 'assets/tonAn.png')
@@ -203,7 +203,7 @@ create() {
                 platforms.create(200 + (400 * i), 707 - 16, 'water')
             } else {
                 xValue = 200 + (400 * i)
-                if ('tree0') {
+                if ('bank') {
                     xTreeValue = Phaser.Math.Between(xValue - 50, xValue + 50)
                 } else {
                     xTreeValue = Phaser.Math.Between(xValue - 200, xValue + 200)
@@ -360,13 +360,13 @@ update() {
         moveDarkness(0.5);
         if (cursors.left.isDown) {
             moveGroundLvlOne(this, 2);
-            movePlayer(this, 'left', this.currentModel.speed)
+            movePlayerLvl1(this, 'left', this.currentModel.speed)
         }
         //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
         else if (cursors.right.isDown) {
             moveDarkness(-1);
             moveGroundLvlOne(this, -2);
-            movePlayer(this, 'right', this.currentModel.speed)
+            movePlayerLvl1(this, 'right', this.currentModel.speed)
         }
         //Start-Stop-Animation
         else {
@@ -556,7 +556,7 @@ function createTree(rnd, x) {
     switch (rnd) {
         case 1:
             scale = 0.5
-            var tree = trees.create(x, 620, 'tree0')
+            var tree = trees.create(x, 620, 'bank')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -565,7 +565,7 @@ function createTree(rnd, x) {
             break;
         case 2:
             scale = 0.6
-            var tree = trees.create(x, 510, 'tree1')
+            var tree = trees.create(x, 510, 'lantern')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -574,7 +574,7 @@ function createTree(rnd, x) {
             break;
         case 3:
             scale = 0.4
-            var tree = trees.create(x, 625, 'tree2')
+            var tree = trees.create(x, 625, 'bin')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -584,7 +584,54 @@ function createTree(rnd, x) {
     }
 }
 
+function movePlayerLvl1(that, direction, speed) {
+    var groundSpeed = 0.5;
 
+    if ('left' == direction) {
+        speed = speed * -1;
+        groundSpeed = groundSpeed * -1;
+    }
+
+    if(that.currentGround.texture.key == "water" && that.currentModel.name == "Ente" && !keyObkSpace.isDown){
+        speed  = 0;
+        groundSpeed = 0;
+    }
+
+
+    background.tilePositionX += groundSpeed
+
+    if (keyObkSpace.isDown) {
+        switch (that.currentModel.name) {
+            case 'Ente':
+                if (that.currentGround.texture.key == 'ground' && currentPlayer.body.touching.down) {
+                    currentPlayer.setVelocityX(0);
+                }
+                currentPlayer.anims.play(that.currentModel.supermodel + '_swim_' + direction, true);
+                break;
+            case 'Affe':
+
+                break;
+            case 'Katze':
+                currentPlayer.setVelocityX(speed * 2);
+                currentPlayer.anims.play(that.currentModel.supermodel + '_' + direction, true);
+
+                break;
+        }
+    } else {
+
+        if (currentPlayer.getCenter().x > 100 || currentPlayer.getCenter().x < 1200) {
+            currentPlayer.setVelocityX(speed);
+        } else {
+            currentPlayer.setVelocityX(0);
+            if (direction == 'left') {
+                background.tilePositionX -= 2
+            } else {
+                background.tilePositionX += 2
+            }
+        }
+        currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
+    }
+}
 
 
 function moveGroundLvlOne(that, speed) {
@@ -615,8 +662,8 @@ function moveGroundLvlOne(that, speed) {
     ziel.body.x = ziel.body.x + speed;
     info.x = info.x + speed
     info2.x = info.x + speed
-}
 
+}
 
 function hitDarkness(player, darkness) {
     this.leben = 0;

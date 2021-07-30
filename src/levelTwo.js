@@ -20,9 +20,10 @@ var keyObjK
 var keyObkSpace
 var keyObkEnter
 
-var background
-var platforms
-var trees
+//var background
+var background_2
+var platforms2
+var trees2
 var ziel
 var ziele
 var lights
@@ -53,12 +54,12 @@ class levelTwo extends Phaser.Scene {
 ///PRELOAD
 //##############
 preload() {
-    this.load.image('sky', 'assets/background_2.png');
-    this.load.image('ground', 'assets/strasse.png');
-    this.load.image('water', 'assets/pfueze.png')
-    this.load.image('tree0', 'assets/absperrung.png')
-    this.load.image('tree1', 'assets/ampel.png')
-    this.load.image('tree2', 'assets/absperrung2.png')
+    this.load.image('sky2', 'assets/background_2.png');
+    this.load.image('street', 'assets/strasse.png');
+    this.load.image('puddle', 'assets/pfueze.png')
+    this.load.image('barrier1', 'assets/absperrung.png')
+    this.load.image('traffic_light', 'assets/ampel.png')
+    this.load.image('barrier2', 'assets/absperrung2.png')
     this.load.image('light', 'assets/light.png')
     this.load.image('home', 'assets/buttonHome.png')
     this.load.image('soundOn', 'assets/tonAn.png')
@@ -129,7 +130,7 @@ preload() {
 create() {
     //------HINTERGRUND-----//
     //x und y parameter werden übergeben (Halbiert der gesamten Größe)
-    background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky');
+    background_2 = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky2');
 
     // Hintergrundmusik hinzufügen 
     levelMusic = this.sound.add('levelSound', { loop: true });
@@ -173,23 +174,23 @@ create() {
         });
 
     //------PLATFORMEN&BODEN-----//
-    platforms = this.physics.add.staticGroup();
-    trees = this.physics.add.staticGroup();
+    platforms2 = this.physics.add.staticGroup();
+    trees2 = this.physics.add.staticGroup();
     ziele = this.physics.add.staticGroup();
 
     anzahlBodenplatten = 10
 
     for (let i = 0; i <= anzahlBodenplatten; i++) {
         if (i == 0) {
-            platforms.create(200 + (400 * i), 707 - 16, 'ground')
+            platforms2.create(200 + (400 * i), 707 - 16, 'street')
         } else if (i ==(anzahlBodenplatten-3)) {
-            platforms.create(200 + (400 * i), 707 - 16, 'ground')
+            platforms2.create(200 + (400 * i), 707 - 16, 'street')
             } else {
             if (Math.random() < 0.3) {
-                platforms.create(200 + (400 * i), 707 - 16, 'water')
+                platforms2.create(200 + (400 * i), 707 - 16, 'puddle')
             } else {
                 xValue = 200 + (400 * i)
-                if ('tree0') {
+                if ('barrier1') {
                     xTreeValue = Phaser.Math.Between(xValue - 50, xValue + 50)
                 } else {
                     xTreeValue = Phaser.Math.Between(xValue - 200, xValue + 200)
@@ -199,7 +200,7 @@ create() {
 
                 createTree2(rnd, xTreeValue)
 
-                platforms.create(xValue, 707 - 16, 'ground')
+                platforms2.create(xValue, 707 - 16, 'street')
             }
         }
     }
@@ -285,15 +286,15 @@ create() {
     createGhostAnimation2(this);
 
     //------KOLLISIONEN------//
-    this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
-    this.physics.add.collider(currentPlayer, trees);
+    this.physics.add.collider(currentPlayer, platforms2, detectGround, null, this);
+    this.physics.add.collider(currentPlayer, trees2);
     this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
-    this.physics.add.collider(platforms, ziel);
+    this.physics.add.collider(platforms2, ziel);
     this.physics.add.collider(currentPlayer, ziel, gewonnen, null, this);
-    this.physics.add.collider(platforms, ghost);
+    this.physics.add.collider(platforms2, ghost);
 
-    this.physics.add.collider(lights, platforms);
-    this.physics.add.collider(lights, trees);
+    this.physics.add.collider(lights, platforms2);
+    this.physics.add.collider(lights, trees2);
     this.physics.add.overlap(currentPlayer, lights, collectLights, null, this);
 
     //Eingebauter Keyboard Manager
@@ -320,14 +321,14 @@ update() {
         moveDarkness(0.5);
         if (cursors.left.isDown) {
             moveGroundLvlTwo(this, 2);
-            movePlayer(this, 'left', this.currentModel.speed)
+            movePlayerLvl2(this, 'left', this.currentModel.speed)
         }
         //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
         else if (cursors.right.isDown) {
-            background.tilePositionX += 0.5
+            background_2.tilePositionX += 0.5
             moveDarkness(-1);
             moveGroundLvlTwo(this,-2);
-            movePlayer(this, 'right', this.currentModel.speed)
+            movePlayerLvl2(this, 'right', this.currentModel.speed)
         }
         //Start-Stop-Animation
         else {
@@ -516,7 +517,7 @@ function createTree2(rnd, x) {
     switch (rnd) {
         case 1:
             scale = 0.5
-            var tree = trees.create(x, 610, 'tree0')
+            var tree = trees2.create(x, 610, 'barrier1')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -525,7 +526,7 @@ function createTree2(rnd, x) {
             break;
         case 2:
             scale = 0.6
-            var tree = trees.create(x, 535, 'tree1')
+            var tree = trees2.create(x, 535, 'traffic_light')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -534,7 +535,7 @@ function createTree2(rnd, x) {
             break;
         case 3:
             scale = 0.4
-            var tree = trees.create(x, 625, 'tree2')
+            var tree = trees2.create(x, 625, 'barrier2')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -544,20 +545,68 @@ function createTree2(rnd, x) {
     }
 }
 
+function movePlayerLvl2(that, direction, speed) {
+    var groundSpeed = 0.5;
+
+    if ('left' == direction) {
+        speed = speed * -1;
+        groundSpeed = groundSpeed * -1;
+    }
+
+    if(that.currentGround.texture.key == "puddle" && that.currentModel.name == "Ente" && !keyObkSpace.isDown){
+        speed  = 0;
+        groundSpeed = 0;
+    }
+
+
+    background_2.tilePositionX += groundSpeed
+
+    if (keyObkSpace.isDown) {
+        switch (that.currentModel.name) {
+            case 'Ente':
+                if (that.currentGround.texture.key == 'street' && currentPlayer.body.touching.down) {
+                    currentPlayer.setVelocityX(0);
+                }
+                currentPlayer.anims.play(that.currentModel.supermodel + '_swim_' + direction, true);
+                break;
+            case 'Affe':
+
+                break;
+            case 'Katze':
+                currentPlayer.setVelocityX(speed * 2);
+                currentPlayer.anims.play(that.currentModel.supermodel + '_' + direction, true);
+
+                break;
+        }
+    } else {
+
+        if (currentPlayer.getCenter().x > 100 || currentPlayer.getCenter().x < 1200) {
+            currentPlayer.setVelocityX(speed);
+        } else {
+            currentPlayer.setVelocityX(0);
+            if (direction == 'left') {
+                background_2.tilePositionX -= 2
+            } else {
+                background_2.tilePositionX += 2
+            }
+        }
+        currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
+    }
+}
 
 function moveGroundLvlTwo(that, speed) {
 
-    if(that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown){
+    if(that.currentGround.texture.key == "puddle" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown){
         speed = 0;
     }
 
-    platforms.getChildren().forEach((c) => {
+    platforms2.getChildren().forEach((c) => {
         if (c instanceof Phaser.GameObjects.Sprite) {
             c.x = c.x + speed
             c.body.x = c.body.x + speed
         }
     })
-    trees.getChildren().forEach((t) => {
+    trees2.getChildren().forEach((t) => {
         if (t instanceof Phaser.GameObjects.Sprite) {
             t.x = t.x + speed
             t.body.x = t.body.x + speed
@@ -588,7 +637,7 @@ function hitDarkness(player, darkness) {
 
 /*function popUp1(player, ground) {
     this.currentGround = ground;
-    if (ground.texture.key == 'water' && player.texture.key != 'Ente') {
+    if (ground.texture.key == 'puddle' && player.texture.key != 'Ente') {
 
         player.setX(player.x - 100)
         popUp1 = this.add.text(600,200, "Drücke 'e' um auf die Ente zu wechsel und mit 'Space' das Wasser zu überwinden", {

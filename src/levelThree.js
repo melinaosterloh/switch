@@ -14,9 +14,11 @@ var keyObjK
 var keyObkSpace
 var keyObkEnter
 
-var background
-var platforms
+//var background
+var background_3
+var platforms3
 var trees
+var trees3
 /*var ziel
 var ziele*/
 var lights
@@ -54,14 +56,14 @@ class levelThree extends Phaser.Scene {
 ///PRELOAD
 //##############
 preload() {
-    this.load.image('sky', 'assets/background_3.png');
-    this.load.image('ground', 'assets/strasse.png');
-    this.load.image('water', 'assets/pfueze.png')
+    this.load.image('sky3', 'assets/background_3.png');
+    this.load.image('street', 'assets/strasse.png');
+    this.load.image('puddle', 'assets/pfueze.png')
     this.load.image('meadow', 'assets/wiese.png')
     this.load.image('fence', 'assets/zaun.png')
-    this.load.image('tree0', 'assets/fahrrad.png')
-    this.load.image('tree1', 'assets/laterne.png')
-    this.load.image('tree2', 'assets/busch.png')
+    this.load.image('bike', 'assets/fahrrad.png')
+    this.load.image('lantern', 'assets/laterne.png')
+    this.load.image('shrub', 'assets/busch.png')
     this.load.image('light', 'assets/light.png')
     this.load.image('house', 'assets/haus.png')
     this.load.image('home', 'assets/buttonHome.png')
@@ -133,7 +135,7 @@ preload() {
 create() {
     //------HINTERGRUND-----//
     //x und y parameter werden übergeben (Halbiert der gesamten Größe)
-    background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky');
+    background_3 = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky3');
 
     // Hintergrundmusik hinzufügen 
     var levelMusic = this.sound.add('levelSound', { loop: true });
@@ -179,9 +181,9 @@ create() {
         });
 
     //------PLATFORMEN&BODEN-----//
-    platforms = this.physics.add.staticGroup();
+    platforms3 = this.physics.add.staticGroup();
     fences = this.physics.add.staticGroup();
-    trees = this.physics.add.staticGroup();
+    trees3 = this.physics.add.staticGroup();
 //    ziele = this.physics.add.staticGroup();
     houses = this.physics.add.staticGroup();
 
@@ -189,16 +191,16 @@ create() {
 
     for (let i = 0; i <= anzahlBodenplatten; i++) {
         if (i == 0) {
-            platforms.create(200 + (400 * i), 707 - 16, 'ground')
-        } else if (i >(anzahlBodenplatten-4)) {
-            platforms.create(200 + (400 * i), 707 - 16, 'meadow')
+            platforms3.create(200 + (400 * i), 707 - 16, 'street')
+        } else if (i >(anzahlBodenplatten-5)) {
+            platforms3.create(200 + (400 * i), 707 - 16, 'meadow')
             fences.create(200 + (400 * i), 647 - 16, 'fence')
             } else {
             if (Math.random() < 0.3) {
-                platforms.create(200 + (400 * i), 707 - 16, 'water')
+                platforms3.create(200 + (400 * i), 707 - 16, 'puddle')
             } else {
                 xValue = 200 + (400 * i)
-                if ('tree0') {
+                if ('bike') {
                     xTreeValue = Phaser.Math.Between(xValue - 50, xValue + 50)
                 } else {
                     xTreeValue = Phaser.Math.Between(xValue - 200, xValue + 200)
@@ -208,11 +210,11 @@ create() {
 
                 createTree3(rnd, xTreeValue)
 
-                platforms.create(xValue, 707 - 16, 'ground')
+                platforms3.create(xValue, 707 - 16, 'street')
             }
         }
     }
-    house = houses.create((anzahlBodenplatten) * 400-100, 418,'house');
+    house = houses.create((anzahlBodenplatten-1) * 400-100, 390,'house');
 //    ziel = ziele.create((anzahlBodenplatten) * 400, 300, 'ziel');
 
     lights = this.physics.add.group({
@@ -294,18 +296,18 @@ create() {
     createGhostAnimation2(this);
 
     //------KOLLISIONEN------//
-    this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
+    this.physics.add.collider(currentPlayer, platforms3, detectGround, null, this);
     this.physics.add.collider(fences, detectGround, null, this);
-    this.physics.add.collider(currentPlayer, trees);
+    this.physics.add.collider(currentPlayer, trees3);
     this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
-//    this.physics.add.collider(platforms, ziel);
+//    this.physics.add.collider(platforms3, ziel);
     this.physics.add.collider(currentPlayer, house, gewonnen, null, this);
     this.physics.add.collider(darkness, fences, gewonnen, null, this);
-    this.physics.add.collider(platforms, ghost);
-    this.physics.add.collider(platforms, fences);
+    this.physics.add.collider(platforms3, ghost);
+    this.physics.add.collider(platforms3, fences);
 
-    this.physics.add.collider(lights, platforms);
-    this.physics.add.collider(lights, trees);
+    this.physics.add.collider(lights, platforms3);
+    this.physics.add.collider(lights, trees3);
     this.physics.add.overlap(currentPlayer, lights, collectLights, null, this);
 
     //Eingebauter Keyboard Manager
@@ -334,14 +336,14 @@ update() {
         moveDarkness(0.5);
         if (cursors.left.isDown) {
             moveGroundLvlThree(this, 2);
-            movePlayer(this, 'left', this.currentModel.speed)
+            movePlayerLvl3(this, 'left', this.currentModel.speed)
         }
         //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
         else if (cursors.right.isDown) {
-            background.tilePositionX += 0.5
+            background_3.tilePositionX += 0.5
             moveDarkness(-1);
             moveGroundLvlThree(this, -2);
-            movePlayer(this, 'right', this.currentModel.speed)
+            movePlayerLvl3(this, 'right', this.currentModel.speed)
         }
         //Start-Stop-Animation
         else {
@@ -531,7 +533,7 @@ function createTree3(rnd, x) {
     switch (rnd) {
         case 1:
             scale = 0.5
-            tree = trees.create(x, 605, 'tree0')
+            tree = trees3.create(x, 605, 'bike')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -540,7 +542,7 @@ function createTree3(rnd, x) {
             break;
         case 2:
             scale = 0.6
-            tree = trees.create(x, 510, 'tree1')
+            tree = trees3.create(x, 510, 'lantern')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -549,7 +551,7 @@ function createTree3(rnd, x) {
             break;
         case 3:
             scale = 0.4
-            tree = trees.create(x, 630, 'tree2')
+            tree = trees3.create(x, 630, 'shrub')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
@@ -559,13 +561,62 @@ function createTree3(rnd, x) {
     }
 }
 
+function movePlayerLvl3(that, direction, speed) {
+    var groundSpeed = 0.5;
+
+    if ('left' == direction) {
+        speed = speed * -1;
+        groundSpeed = groundSpeed * -1;
+    }
+
+    if(that.currentGround.texture.key == "puddle" && that.currentModel.name == "Ente" && !keyObkSpace.isDown){
+        speed  = 0;
+        groundSpeed = 0;
+    }
+
+
+    background_3.tilePositionX += groundSpeed
+
+    if (keyObkSpace.isDown) {
+        switch (that.currentModel.name) {
+            case 'Ente':
+                if (that.currentGround.texture.key == 'street' && currentPlayer.body.touching.down) {
+                    currentPlayer.setVelocityX(0);
+                }
+                currentPlayer.anims.play(that.currentModel.supermodel + '_swim_' + direction, true);
+                break;
+            case 'Affe':
+
+                break;
+            case 'Katze':
+                currentPlayer.setVelocityX(speed * 2);
+                currentPlayer.anims.play(that.currentModel.supermodel + '_' + direction, true);
+
+                break;
+        }
+    } else {
+
+        if (currentPlayer.getCenter().x > 100 || currentPlayer.getCenter().x < 1200) {
+            currentPlayer.setVelocityX(speed);
+        } else {
+            currentPlayer.setVelocityX(0);
+            if (direction == 'left') {
+                background_3.tilePositionX -= 2
+            } else {
+                background_3.tilePositionX += 2
+            }
+        }
+        currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
+    }
+}
+
 function moveGroundLvlThree(that, speed) {
 
-    if(that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown){
+    if(that.currentGround.texture.key == "puddle" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown){
         speed = 0;
     }
 
-    platforms.getChildren().forEach((c) => {
+    platforms3.getChildren().forEach((c) => {
         if (c instanceof Phaser.GameObjects.Sprite) {
             c.x = c.x + speed
             c.body.x = c.body.x + speed
@@ -577,7 +628,7 @@ function moveGroundLvlThree(that, speed) {
                 c.body.x = c.body.x + speed
             }
         })
-    trees.getChildren().forEach((t) => {
+    trees3.getChildren().forEach((t) => {
         if (t instanceof Phaser.GameObjects.Sprite) {
             t.x = t.x + speed
             t.body.x = t.body.x + speed

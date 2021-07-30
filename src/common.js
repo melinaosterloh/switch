@@ -1,6 +1,6 @@
 function detectGround(player, ground) {
     this.currentGround = ground;
-    if (ground.texture.key == 'water' && player.texture.key != 'Ente') {
+    if ((ground.texture.key == 'water' || ground.texture.key == 'puddle') && player.texture.key != 'Ente') {
         this.leben -= 1
         player.setX(player.x - 100)
     }
@@ -24,7 +24,7 @@ function moveDarkness(speed) {
 }
 
 
-function movePlayer(that, direction, speed) {
+/*function movePlayer(that, direction, speed) {
     var groundSpeed = 0.5;
 
     if ('left' == direction) {
@@ -71,4 +71,4 @@ function movePlayer(that, direction, speed) {
         }
         currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
     }
-}
+}*/
