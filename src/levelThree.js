@@ -300,14 +300,14 @@ update() {
     if (this.leben > 0 && this.spielAmLaufen) {
         moveDarkness(0.5);
         if (cursors.left.isDown) {
-            movingGround(2);
+            moveGroundLvlThree(this, 2);
             movePlayer(this, 'left', this.currentModel.speed)
         }
         //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
         else if (cursors.right.isDown) {
             background.tilePositionX += 0.5
             moveDarkness(-1);
-            movingGround(-2);
+            moveGroundLvlThree(this, -2);
             movePlayer(this, 'right', this.currentModel.speed)
         }
         //Start-Stop-Animation
@@ -522,54 +522,12 @@ function createTree(rnd, x) {
     }
 }
 
-function movePlayer(that, direction, speed) {
-    if ('left' == direction) {
-        speed = speed * -1;
+function moveGroundLvlThree(that, speed) {
+
+    if(that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown){
+        speed = 0;
     }
 
-    if (keyObkSpace.isDown) {
-        switch (that.currentModel.name) {
-            case 'Ente':
-                if (that.currentGround.texture.key == 'ground' && currentPlayer.body.touching.down) {
-                    currentPlayer.setVelocityX(0);
-                }
-                currentPlayer.anims.play(that.currentModel.supermodel + '_swim_' + direction, true);
-                break;
-            case 'Affe':
-
-                break;
-            case 'Katze':
-                currentPlayer.setVelocityX(speed * 2);
-                currentPlayer.anims.play(that.currentModel.supermodel + '_' + direction, true);
-
-                break;
-        }
-    } else {
-
-        if (currentPlayer.getCenter().x > 100 || currentPlayer.getCenter().x < 1200) {
-            currentPlayer.setVelocityX(speed);
-        } else {
-            currentPlayer.setVelocityX(0);
-            if (direction == 'left') {
-                background.tilePositionX -= 2
-            } else {
-                background.tilePositionX += 2
-            }
-        }
-        currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
-    }
-}
-
-function die(that) {
-    currentPlayer.anims.play(that.currentModel.name + '_death');
-}
-
-function win(that) {
-    currentPlayer.anims.play(that.currentModel.name + '_turn');
-}
-
-
-function movingGround(speed) {
     platforms.getChildren().forEach((c) => {
         if (c instanceof Phaser.GameObjects.Sprite) {
             c.x = c.x + speed
@@ -615,14 +573,6 @@ function moveDarkness(speed) {
 
 function hitDarkness(player, darkness) {
     this.leben = 0;
-}
-
-function detectGround(player, ground) {
-    this.currentGround = ground;
-    if (ground.texture.key == 'water' && player.texture.key != 'Ente') {
-        this.leben -= 1
-        player.setX(player.x - 100)
-    }
 }
 
 function gewonnen(player, goal) {
