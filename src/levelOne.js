@@ -446,7 +446,6 @@ update() {
 
             currentPlayer.setVelocityX(0);
             die(this)
-            lostLife.play();
 
         if(this.spielAmLaufen == false){
 
