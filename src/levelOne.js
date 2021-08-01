@@ -283,10 +283,16 @@ class levelOne extends Phaser.Scene {
         this.currentModel = this.enteModel
         currentPlayer = this.physics.add.sprite(200, 600, this.currentModel.name);
 
+        //Bounce bewirkt, dass der Player kurz 'hüpft' wenn er landet
+        currentPlayer.setBounce(0.2);
+        //Verhindert, dass der Spieler über das Ende des Bildschirms hinaus laufen/springen kann
+        currentPlayer.setCollideWorldBounds(true);
+
         //------LEBEN------//
         lebenLabel = this.add.text(16, 16, 'Leben: ' + this.leben, {
-            fontSize: '32px',
-            fill: 'white'
+            fontSize: '32px Calibri',
+            fill: 'white',
+            align: "center",
         })
 
         //Bounce bewirkt, dass der Player kurz 'hüpft' wenn er landet
@@ -294,109 +300,77 @@ class levelOne extends Phaser.Scene {
         //Verhindert, dass der Spieler über das Ende des Bildschirms hinaus laufen/springen kann
         currentPlayer.setCollideWorldBounds(true);
 
-    //------LEBEN------//
-    lebenLabel = this.add.text(16, 16, 'Leben: ' + this.leben, {
-        fontSize: '32px Calibri',
-        fill: 'white',
-        align: "center",
-    })
-
-    //Bounce bewirkt, dass der Player kurz 'hüpft' wenn er landet
-    currentPlayer.setBounce(0.2);
-    //Verhindert, dass der Spieler über das Ende des Bildschirms hinaus laufen/springen kann
-    currentPlayer.setCollideWorldBounds(true);
-
-    //------PUNKTE------//
-    scoreText = this.add.text(16, 50, 'Score: 0', { 
-        fontSize: '32px Calibri', 
-        fill: 'white', 
-        align:"center"
-    });
-
-    info = this.add.text(100, 100,  "Hallo! Toll, dass du uns begleitest! \n Die Steuerung ist über die Pfeiltasten möglich. \n Manche Hindernisse können nur mit bestimmten \n Fähigkeiten überwunden werden. \n Drücke 'E' , 'K' oder 'A' umd zwischen den Tieren zu wechseln und \n 'SPACE' um die Spezialfähigkeiten zu aktiviert." ,{
-        font: '40px Calibri',
-        fill: "black",
-        align: "center",
-    });
-
-    //------KAMERA-----//
-    //Kamera folgt Figur
-    this.cameras.main.setBounds(0, 0, 1400, 707);
-    this.physics.world.setBounds(0, 0, 1000, 707);
-    this.cameras.main.startFollow(currentPlayer, true, 0.5, 0.5);
-
-
-    //ANIMATIONEN SPIELER MIT SPRITESHEET
-
-    createDeathAnimation(this, this.enteModel.name, 13);
-    createDeathAnimation(this, this.affeModel.name, 11);
-    createDeathAnimation(this, this.katzeModel.name, 9);
-
-    createTurnAnimation(this, this.enteModel.name, 4);
-    createTurnAnimation(this, this.affeModel.name, 4);
-    createTurnAnimation(this, this.katzeModel.name, 4);
-    createTurnAnimation(this, this.katzeModel.supermodel, 4);
-
-    createMoveAnimation(this, 'right', this.enteModel.name, 5, 8);
-    createMoveAnimation(this, 'right', this.affeModel.name, 5, 8);
-    createMoveAnimation(this, 'right', this.katzeModel.name, 5, 8);
-    createMoveAnimation(this, 'right', this.katzeModel.supermodel, 0, 5);
-
-    createMoveAnimation(this, 'left', this.enteModel.name, 0, 3);
-    createMoveAnimation(this, 'left', this.affeModel.name, 0, 3);
-    createMoveAnimation(this, 'left', this.katzeModel.name, 0, 3);
-//    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 2);
-
-    createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
-
-    createMoveAnimation(this, 'swim_right', this.enteModel.name, 11, 12)
-    createMoveAnimation(this, 'swim_left', this.enteModel.name, 9, 10)
-
-    createZielAnimation(this);
-    createDarknessAnimation(this);
-    createGhostAnimation(this);
-    createGhostAnimation2(this);
-
-    //------KOLLISIONEN------//
-    this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
-    this.physics.add.collider(currentPlayer, trees);
-    this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
-    this.physics.add.collider(platforms, ziel);
-    this.physics.add.collider(currentPlayer, ziel, gewonnen, null, this);
-    this.physics.add.collider(platforms, ghost);
-
-    this.physics.add.collider(lights, platforms);
-    this.physics.add.collider(lights, trees);
-    this.physics.add.overlap(currentPlayer, lights, collectLights, null, this);
-
-    //Eingebauter Keyboard Manager
-    cursors = this.input.keyboard.createCursorKeys();
-    keyObjE = this.input.keyboard.addKey('e'); // Get key object
-    keyObjA = this.input.keyboard.addKey('a'); // Get key object
-    keyObjK = this.input.keyboard.addKey('k'); // Get key object
-    keyObkSpace = this.input.keyboard.addKey('space'); // Get key object
-    keyObkEnter = this.input.keyboard.addKey('enter'); // Get key object
-
-        info2 = this.add.text(600, 230, "Steuere mich mit den Pfeiltasten. (links, rechts, springen).", {
-            color: 'white',
-            fontSize: '24px'
+        //------PUNKTE------//
+        scoreText = this.add.text(16, 50, 'Score: 0', {
+            fontSize: '32px Calibri',
+            fill: 'white',
+            align: "center"
         });
 
-        //Shows info when player is near a Sign
-
-        /* popUp2 = this.add.text(1650, 580, "new Weapon to fell the tree", {
-            color: 'white',
-            fontSize: '22px',
+        info = this.add.text(100, 100, "Hallo! Toll, dass du uns begleitest! \n Die Steuerung ist über die Pfeiltasten möglich. \n Manche Hindernisse können nur mit bestimmten \n Fähigkeiten überwunden werden. \n Drücke 'E' , 'K' oder 'A' umd zwischen den Tieren zu wechseln und \n 'SPACE' um die Spezialfähigkeiten zu aktiviert.", {
+            font: '40px Calibri',
+            fill: "black",
+            align: "center",
         });
-        popUp1.setVisible(false);
-        popUp2.setVisible(false);
 
-        popUp3 = this.add.text(4780, 560, "Jump into that Portal to move on", {
-            color: 'white',
-            fontSize: '22px',
-          });
-        popUp3.setVisible(false); */
+        //------KAMERA-----//
+        //Kamera folgt Figur
+        this.cameras.main.setBounds(0, 0, 1400, 707);
+        this.physics.world.setBounds(0, 0, 1000, 707);
+        this.cameras.main.startFollow(currentPlayer, true, 0.5, 0.5);
 
+
+        //ANIMATIONEN SPIELER MIT SPRITESHEET
+
+        createDeathAnimation(this, this.enteModel.name, 13);
+        createDeathAnimation(this, this.affeModel.name, 11);
+        createDeathAnimation(this, this.katzeModel.name, 9);
+
+        createTurnAnimation(this, this.enteModel.name, 4);
+        createTurnAnimation(this, this.affeModel.name, 4);
+        createTurnAnimation(this, this.katzeModel.name, 4);
+        createTurnAnimation(this, this.katzeModel.supermodel, 4);
+
+        createMoveAnimation(this, 'right', this.enteModel.name, 5, 8);
+        createMoveAnimation(this, 'right', this.affeModel.name, 5, 8);
+        createMoveAnimation(this, 'right', this.katzeModel.name, 5, 8);
+        createMoveAnimation(this, 'right', this.katzeModel.supermodel, 0, 5);
+
+        createMoveAnimation(this, 'left', this.enteModel.name, 0, 3);
+        createMoveAnimation(this, 'left', this.affeModel.name, 0, 3);
+        createMoveAnimation(this, 'left', this.katzeModel.name, 0, 3);
+        //    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 2);
+
+        createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
+
+        createMoveAnimation(this, 'swim_right', this.enteModel.name, 11, 12)
+        createMoveAnimation(this, 'swim_left', this.enteModel.name, 9, 10)
+
+        createZielAnimation(this);
+        createDarknessAnimation(this);
+        createGhostAnimation(this);
+        createGhostAnimation2(this);
+
+        //------KOLLISIONEN------//
+        this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
+        this.physics.add.collider(currentPlayer, trees);
+        this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
+        this.physics.add.collider(platforms, ziel);
+        this.physics.add.collider(currentPlayer, ziel, gewonnen, null, this);
+        this.physics.add.collider(platforms, ghost);
+
+        this.physics.add.collider(lights, platforms);
+        this.physics.add.collider(lights, trees);
+        this.physics.add.overlap(currentPlayer, lights, collectLights, null, this);
+
+        //Eingebauter Keyboard Manager
+        cursors = this.input.keyboard.createCursorKeys();
+        keyObjE = this.input.keyboard.addKey('e'); // Get key object
+        keyObjA = this.input.keyboard.addKey('a'); // Get key object
+        keyObjK = this.input.keyboard.addKey('k'); // Get key object
+        keyObkSpace = this.input.keyboard.addKey('space'); // Get key object
+        keyObkEnter = this.input.keyboard.addKey('enter'); // Get key object
+        
         //------KAMERA-----//
         //Kamera folgt Figur
         this.cameras.main.setBounds(0, 0, 1400, 707);
@@ -466,7 +440,6 @@ class levelOne extends Phaser.Scene {
         ghost.anims.play('ghost', true);
         ghost2.anims.play('ghost2', true);
         lebenLabel.setText('Leben: ' + this.leben)
-
 
 
         if (this.leben > 0 && this.spielAmLaufen) {
@@ -561,9 +534,10 @@ class levelOne extends Phaser.Scene {
 
         } else {
 
-            if(this.leben <= 0){
+            if (this.leben <= 0) {
                 this.leben = 0;
             }
+    
 
             currentPlayer.setVelocityX(0);
             if (this.spielAmLaufen == false && this.leben > 0) {
@@ -634,7 +608,7 @@ function movePlayerLvl1(that, direction, speed, popUp) {
         groundSpeed = 0;
     }
 
-    if(collisionObstacle) {
+    if (collisionObstacle) {
         groundSpeed = 0;
     }
 
@@ -676,12 +650,12 @@ function movePlayerLvl1(that, direction, speed, popUp) {
 
 function moveGroundLvlOne(that, speed) {
 
-    
+
     if (that.currentGround != undefined && that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
         speed = 0;
     }
 
-    if(collisionObstacle){
+    if (collisionObstacle) {
         speed = 0;
     }
 
