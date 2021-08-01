@@ -444,6 +444,7 @@ class levelTwo extends Phaser.Scene {
                 }
             }
         }
+        collisionObstacle = false;
     }
 }
 //Erstellen der Hindernisse

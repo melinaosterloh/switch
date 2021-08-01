@@ -459,6 +459,7 @@ class levelThree extends Phaser.Scene {
 
             }
         }
+        collisionObstacle = false;
     }
 }
 
