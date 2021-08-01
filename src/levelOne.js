@@ -50,6 +50,8 @@ var xTreeValue
 var xValue
 var rnd
 
+var collisionObstacle = false;
+
 class levelOne extends Phaser.Scene {
 
     constructor(config) {
@@ -363,7 +365,7 @@ class levelOne extends Phaser.Scene {
 
         //------KOLLISIONEN------//
         this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
-        this.physics.add.collider(currentPlayer, trees);
+        this.physics.add.collider(currentPlayer, trees, hitObstacle, null, this);
         this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
         this.physics.add.collider(platforms, ziel);
         this.physics.add.collider(currentPlayer, ziel, gewonnen, null, this);
@@ -392,6 +394,8 @@ class levelOne extends Phaser.Scene {
         ghost.anims.play('ghost', true);
         ghost2.anims.play('ghost2', true);
         lebenLabel.setText('Leben: ' + this.leben)
+
+
 
         if (this.leben > 0 && this.spielAmLaufen) {
             moveDarkness(0.5);
@@ -484,6 +488,10 @@ class levelOne extends Phaser.Scene {
 
         } else {
 
+            if(this.leben <= 0){
+                this.leben = 0;
+            }
+
             currentPlayer.setVelocityX(0);
             die(this)
 
@@ -501,6 +509,7 @@ class levelOne extends Phaser.Scene {
                 }
             }
         }
+        collisionObstacle = false;
     }
 }
 
@@ -543,6 +552,8 @@ function createTree(rnd, x) {
 function movePlayerLvl1(that, direction, speed) {
     var groundSpeed = 0.5;
 
+    console.log("HIT : " + collisionObstacle)
+
     if ('left' == direction) {
         speed = speed * -1;
         groundSpeed = groundSpeed * -1;
@@ -553,6 +564,11 @@ function movePlayerLvl1(that, direction, speed) {
         groundSpeed = 0;
     }
 
+    if(collisionObstacle) {
+        groundSpeed = 0;
+    }
+
+    console.log("Groundspeed: " + groundSpeed);
 
     background.tilePositionX += groundSpeed
 
@@ -596,6 +612,10 @@ function moveGroundLvlOne(that, speed) {
         speed = 0;
     }
 
+    if(collisionObstacle){
+        speed = 0;
+    }
+
     platforms.getChildren().forEach((c) => {
         if (c instanceof Phaser.GameObjects.Sprite) {
             c.x = c.x + speed
@@ -619,10 +639,6 @@ function moveGroundLvlOne(that, speed) {
     info.x = info.x + speed
     info2.x = info.x + speed
 
-}
-
-function hitDarkness(player, darkness) {
-    this.leben = 0;
 }
 
 /*function popUp1(player, ground) {

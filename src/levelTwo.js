@@ -559,10 +559,6 @@ function moveDarkness(speed) {
     ghosts2.getChildren()[0].body.x = ghosts2.getChildren()[0].body.x + speed
 }
 
-function hitDarkness(player, darkness) {
-    this.leben = 0;
-}
-
 /*function popUp1(player, ground) {
     this.currentGround = ground;
     if (ground.texture.key == 'puddle' && player.texture.key != 'Ente') {

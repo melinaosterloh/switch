@@ -576,9 +576,6 @@ function moveDarkness(speed) {
     ghosts2.getChildren()[0].body.x = ghosts2.getChildren()[0].body.x + speed
 }
 
-function hitDarkness(player, darkness) {
-    this.leben = 0;
-}
 
 function gewonnen(player, goal) {
     this.spielAmLaufen = false

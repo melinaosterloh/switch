@@ -1,9 +1,17 @@
 function detectGround(player, ground) {
     this.currentGround = ground;
     if ((ground.texture.key == 'water' || ground.texture.key == 'puddle') && player.texture.key != 'Ente') {
-        this.leben -= 1
-        player.setX(player.x - 100)
+        player.setX(player.x - 200)
     }
+}
+
+
+function hitDarkness(player, darkness) {
+    this.leben -= 1;
+}
+
+function hitObstacle(player, obstacle) {
+    collisionObstacle = true;
 }
 
 function die(that) {
