@@ -22,7 +22,17 @@ function win(that) {
     currentPlayer.anims.play(that.currentModel.name + '_turn');
 }
 
-function moveDarkness(speed) {
+function moveDarkness(that,speed) {
+    if(collisionObstacle){
+        speed = defaultDarknessSpeed;
+    }
+
+    if(that.currentGround != undefined){
+        if((that.currentGround.texture.key == "water" || that.currentGround.texture.key == "puddle")){
+                speed = defaultDarknessSpeed;
+        }
+    }
+
     darknesses.getChildren()[0].x = darknesses.getChildren()[0].x + speed
     darknesses.getChildren()[0].body.x = darknesses.getChildren()[0].body.x + speed
     ghosts.getChildren()[0].x = ghosts.getChildren()[0].x + speed
