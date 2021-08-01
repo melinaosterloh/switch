@@ -59,7 +59,7 @@ var currentModel;
 var currentGround;
 
 var collisionObstacle = false;
-var defaultDarknessSpeed = 0.8;
+var defaultDarknessSpeed;
 
 class levelThree extends Phaser.Scene {
 
@@ -118,6 +118,7 @@ class levelThree extends Phaser.Scene {
 
         this.leben = 3;
         this.spielAmLaufen = true;
+        this.defaultDarknessSpeed = 0.8;
 
         this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
             frameWidth: 62,
@@ -388,14 +389,13 @@ class levelThree extends Phaser.Scene {
         ghost2.anims.play('ghost2', true);
         lebenLabel.setText('Leben: ' + this.leben)
         if (this.leben > 0 && this.spielAmLaufen) {
-            moveDarkness(this, defaultDarknessSpeed);
+            moveDarkness(this, this.defaultDarknessSpeed);
             if (cursors.left.isDown) {
                 moveGroundLvlThree(this, 2);
                 movePlayerLvl3(this, 'left', this.currentModel.speed)
             }
             //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
             else if (cursors.right.isDown) {
-                moveDarkness(this, -1);
                 moveGroundLvlThree(this, -2);
                 movePlayerLvl3(this, 'right', this.currentModel.speed)
             }

@@ -53,7 +53,7 @@ var xValue;
 var rnd;
 
 var collisionObstacle = false;
-var defaultDarknessSpeed = 0.5;
+var defaultDarknessSpeed;
 
 
 class levelOne extends Phaser.Scene {
@@ -111,6 +111,7 @@ class levelOne extends Phaser.Scene {
 
         this.leben = 3;
         this.spielAmLaufen = true;
+        this.defaultDarknessSpeed = 0.5;
 
         this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
             frameWidth: 62,
@@ -237,7 +238,7 @@ class levelOne extends Phaser.Scene {
                 platforms.create(200 + (400 * i), 707 - 16, 'ground')
             } else {
                 if (Math.random() < 0.3) {
-                    platforms.create(200 + (400 * i), 707 - 16, 'ground')
+                    platforms.create(200 + (400 * i), 707 - 16, 'water')
                 } else {
                     xValue = 200 + (400 * i)
                     if ('bank') {
@@ -443,16 +444,16 @@ class levelOne extends Phaser.Scene {
         ghost.anims.play('ghost', true);
         ghost2.anims.play('ghost2', true);
         lebenLabel.setText('Leben: ' + this.leben)
+
+        moveDarkness(this, this.defaultDarknessSpeed)
+
         if (this.leben > 0 && this.spielAmLaufen) {
-            moveDarkness(this, defaultDarknessSpeed);
             if (cursors.left.isDown) {
-                moveDarkness(this, -0.5)
                 moveGroundLvlOne(this, 2);
                 movePlayerLvl1(this, 'left', this.currentModel.speed)
             }
             //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
             else if (cursors.right.isDown) {
-                moveDarkness(this, -0.5);
                 moveGroundLvlOne(this, -2);
                 movePlayerLvl1(this, 'right', this.currentModel.speed)
             }
@@ -628,6 +629,8 @@ function movePlayerLvl1(that, direction, speed, popUp) {
             case 'Ente':
                 if (that.currentGround.texture.key == 'ground' && currentPlayer.body.touching.down) {
                     currentPlayer.setVelocityX(0);
+                } else {
+                    currentPlayer.setVelocityX(speed)
                 }
                 currentPlayer.anims.play(that.currentModel.supermodel + '_swim_' + direction, true);
                 break;

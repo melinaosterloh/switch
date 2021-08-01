@@ -26,12 +26,12 @@ function win(that) {
 
 function moveDarkness(that,speed) {
     if(collisionObstacle){
-        speed = defaultDarknessSpeed;
+        speed = that.defaultDarknessSpeed;
     }
 
     if(that.currentGround != undefined){
         if((that.currentGround.texture.key == "water" || that.currentGround.texture.key == "puddle")){
-                speed = defaultDarknessSpeed;
+            speed = that.defaultDarknessSpeed;
         }
     }
 
@@ -41,6 +41,7 @@ function moveDarkness(that,speed) {
     ghosts.getChildren()[0].body.x = ghosts.getChildren()[0].body.x + speed
     ghosts2.getChildren()[0].x = ghosts2.getChildren()[0].x + speed
     ghosts2.getChildren()[0].body.x = ghosts2.getChildren()[0].body.x + speed
+    console.log("DarknessSpeed = " + speed)
 }
 
 function createTurnAnimation(that, name, frame) {

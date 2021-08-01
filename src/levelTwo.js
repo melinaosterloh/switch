@@ -54,7 +54,7 @@ var xValue;
 var rnd;
 
 var collisionObstacle = false;
-var defaultDarknessSpeed = 0.65;
+var defaultDarknessSpeed;
 
 class levelTwo extends Phaser.Scene {
 
@@ -111,6 +111,7 @@ class levelTwo extends Phaser.Scene {
 
         this.leben = 3;
         this.spielAmLaufen = true;
+        this.defaultDarknessSpeed = 0.65;
 
         this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
             frameWidth: 62,
@@ -375,14 +376,14 @@ class levelTwo extends Phaser.Scene {
         lebenLabel.setText('Leben: ' + this.leben)
 
         if (this.leben > 0 && this.spielAmLaufen) {
-            moveDarkness(this, defaultDarknessSpeed);
+            moveDarkness(this, this.defaultDarknessSpeed);
+
             if (cursors.left.isDown) {
                 moveGroundLvlTwo(this, 2);
                 movePlayerLvl2(this, 'left', this.currentModel.speed)
             }
             //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
             else if (cursors.right.isDown) {
-                moveDarkness(this, -1);
                 moveGroundLvlTwo(this, -2);
                 movePlayerLvl2(this, 'right', this.currentModel.speed)
             }
