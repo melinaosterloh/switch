@@ -375,64 +375,7 @@ class levelOne extends Phaser.Scene {
         keyObjK = this.input.keyboard.addKey('k'); // Get key object
         keyObkSpace = this.input.keyboard.addKey('space'); // Get key object
         keyObkEnter = this.input.keyboard.addKey('enter'); // Get key object
-        
-        //------KAMERA-----//
-        //Kamera folgt Figur
-        this.cameras.main.setBounds(0, 0, 1400, 707);
-        this.physics.world.setBounds(0, 0, 1000, 707);
-        this.cameras.main.startFollow(currentPlayer, true, 0.5, 0.5);
 
-
-        //ANIMATIONEN SPIELER MIT SPRITESHEET
-
-        createDeathAnimation(this, this.enteModel.name, 13);
-        createDeathAnimation(this, this.affeModel.name, 11);
-        createDeathAnimation(this, this.katzeModel.name, 9);
-
-        createTurnAnimation(this, this.enteModel.name, 4);
-        createTurnAnimation(this, this.affeModel.name, 4);
-        createTurnAnimation(this, this.katzeModel.name, 4);
-        createTurnAnimation(this, this.katzeModel.supermodel, 4);
-
-        createMoveAnimation(this, 'right', this.enteModel.name, 5, 8);
-        createMoveAnimation(this, 'right', this.affeModel.name, 5, 8);
-        createMoveAnimation(this, 'right', this.katzeModel.name, 5, 8);
-        createMoveAnimation(this, 'right', this.katzeModel.supermodel, 0, 5);
-
-        createMoveAnimation(this, 'left', this.enteModel.name, 0, 3);
-        createMoveAnimation(this, 'left', this.affeModel.name, 0, 3);
-        createMoveAnimation(this, 'left', this.katzeModel.name, 0, 3);
-        //    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 2);
-
-        createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
-
-        createMoveAnimation(this, 'swim_right', this.enteModel.name, 11, 12)
-        createMoveAnimation(this, 'swim_left', this.enteModel.name, 9, 10)
-
-        createZielAnimation(this);
-        createDarknessAnimation(this);
-        createGhostAnimation(this);
-        createGhostAnimation2(this);
-
-        //------KOLLISIONEN------//
-        this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
-        this.physics.add.collider(currentPlayer, trees, hitObstacle, null, this);
-        this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
-        this.physics.add.collider(platforms, ziel);
-        this.physics.add.collider(currentPlayer, ziel, gewonnen, null, this);
-        this.physics.add.collider(platforms, ghost);
-
-        this.physics.add.collider(lights, platforms);
-        this.physics.add.collider(lights, trees);
-        this.physics.add.overlap(currentPlayer, lights, collectLights, null, this);
-
-        //Eingebauter Keyboard Manager
-        cursors = this.input.keyboard.createCursorKeys();
-        keyObjE = this.input.keyboard.addKey('e'); // Get key object
-        keyObjA = this.input.keyboard.addKey('a'); // Get key object
-        keyObjK = this.input.keyboard.addKey('k'); // Get key object
-        keyObkSpace = this.input.keyboard.addKey('space'); // Get key object
-        keyObkEnter = this.input.keyboard.addKey('enter'); // Get key object
     }
 
     //##############
@@ -669,7 +612,7 @@ function movePlayerLvl1(that, direction, speed, popUp) {
 function moveGroundLvlOne(that, speed) {
     if(currentPlayer.getCenter().x < 100 || currentPlayer.getCenter().x > 968){
         if(that.currentModel.name == "Katze" && keyObkSpace.isDown){
-            speed = speed * 4;
+            speed = speed * 3;
         } else {
             speed = speed * 2;
         }
