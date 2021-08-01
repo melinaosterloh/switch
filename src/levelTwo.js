@@ -43,6 +43,7 @@ var xValue
 var rnd
 
 var collisionObstacle = false;
+var defaultDarknessSpeed = 0.65;
 
 class levelTwo extends Phaser.Scene {
 
@@ -335,14 +336,14 @@ class levelTwo extends Phaser.Scene {
         lebenLabel.setText('Leben: ' + this.leben)
 
         if (this.leben > 0 && this.spielAmLaufen) {
-            moveDarkness(0.5);
+            moveDarkness(this, defaultDarknessSpeed);
             if (cursors.left.isDown) {
                 moveGroundLvlTwo(this, 2);
                 movePlayerLvl2(this, 'left', this.currentModel.speed)
             }
             //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
             else if (cursors.right.isDown) {
-                moveDarkness(-1);
+                moveDarkness(this, -1);
                 moveGroundLvlTwo(this, -2);
                 movePlayerLvl2(this, 'right', this.currentModel.speed)
             }
@@ -486,7 +487,7 @@ function movePlayerLvl2(that, direction, speed) {
         groundSpeed = groundSpeed * -1;
     }
 
-    if (that.currentGround.texture.key == "puddle" && that.currentModel.name == "Ente" && !keyObkSpace.isDown) {
+    if (that.currentGround != undefined && that.currentGround.texture.key == "puddle" && that.currentModel.name == "Ente" && !keyObkSpace.isDown) {
         speed = 0;
         groundSpeed = 0;
     }
@@ -534,10 +535,7 @@ function movePlayerLvl2(that, direction, speed) {
 }
 
 function moveGroundLvlTwo(that, speed) {
-
-    console.log(that.currentGround.texture.key)
-
-    if (that.currentGround.texture.key == "puddle" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
+    if (that.currentGround != undefined && that.currentGround.texture.key == "puddle" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
         speed = 0;
     }
 
@@ -565,15 +563,6 @@ function moveGroundLvlTwo(that, speed) {
     })
     ziel.x = ziel.x + speed
     ziel.body.x = ziel.body.x + speed;
-}
-
-function moveDarkness(speed) {
-    darknesses.getChildren()[0].x = darknesses.getChildren()[0].x + speed
-    darknesses.getChildren()[0].body.x = darknesses.getChildren()[0].body.x + speed
-    ghosts.getChildren()[0].x = ghosts.getChildren()[0].x + speed
-    ghosts.getChildren()[0].body.x = ghosts.getChildren()[0].body.x + speed
-    ghosts2.getChildren()[0].x = ghosts2.getChildren()[0].x + speed
-    ghosts2.getChildren()[0].body.x = ghosts2.getChildren()[0].body.x + speed
 }
 
 /*function popUp1(player, ground) {

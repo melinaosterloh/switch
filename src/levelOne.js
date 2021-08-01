@@ -51,6 +51,8 @@ var xValue
 var rnd
 
 var collisionObstacle = false;
+var defaultDarknessSpeed = 0.5;
+
 
 class levelOne extends Phaser.Scene {
 
@@ -398,14 +400,14 @@ class levelOne extends Phaser.Scene {
 
 
         if (this.leben > 0 && this.spielAmLaufen) {
-            moveDarkness(0.5);
+            moveDarkness(this, defaultDarknessSpeed);
             if (cursors.left.isDown) {
                 moveGroundLvlOne(this, 2);
                 movePlayerLvl1(this, 'left', this.currentModel.speed)
             }
             //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
             else if (cursors.right.isDown) {
-                moveDarkness(-1);
+                moveDarkness(this, -1);
                 moveGroundLvlOne(this, -2);
                 movePlayerLvl1(this, 'right', this.currentModel.speed)
             }
@@ -493,11 +495,7 @@ class levelOne extends Phaser.Scene {
             }
 
             currentPlayer.setVelocityX(0);
-            die(this)
-
-            if (this.spielAmLaufen == false) {
-
-
+            if (this.spielAmLaufen == false && this.leben > 0) {
                 currentPlayer.setVelocityX(0);
                 lebenLabel.setText('Press "ENTER"                    GEWONNEN :)')
                 win(this)
@@ -507,6 +505,8 @@ class levelOne extends Phaser.Scene {
                     levelMusic.stop();
                     console.log("Level 1 auf 2 wurde gewechselt!")
                 }
+            } else {
+                die(this)
             }
         }
         collisionObstacle = false;
@@ -552,14 +552,12 @@ function createTree(rnd, x) {
 function movePlayerLvl1(that, direction, speed) {
     var groundSpeed = 0.5;
 
-    console.log("HIT : " + collisionObstacle)
-
     if ('left' == direction) {
         speed = speed * -1;
         groundSpeed = groundSpeed * -1;
     }
 
-    if (that.currentGround.texture.key == "water" && that.currentModel.name == "Ente" && !keyObkSpace.isDown) {
+    if (that.currentGround != undefined && that.currentGround.texture.key == "water" && that.currentModel.name == "Ente" && !keyObkSpace.isDown) {
         speed = 0;
         groundSpeed = 0;
     }
@@ -567,8 +565,6 @@ function movePlayerLvl1(that, direction, speed) {
     if(collisionObstacle) {
         groundSpeed = 0;
     }
-
-    console.log("Groundspeed: " + groundSpeed);
 
     background.tilePositionX += groundSpeed
 
@@ -608,7 +604,8 @@ function movePlayerLvl1(that, direction, speed) {
 
 function moveGroundLvlOne(that, speed) {
 
-    if (that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
+    
+    if (that.currentGround != undefined && that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
         speed = 0;
     }
 
@@ -640,18 +637,6 @@ function moveGroundLvlOne(that, speed) {
     info2.x = info.x + speed
 
 }
-
-/*function popUp1(player, ground) {
-    this.currentGround = ground;
-    if (ground.texture.key == 'water' && player.texture.key != 'Ente') {
-
-        player.setX(player.x - 100)
-        popUp1 = this.add.text(600,200, "Drücke 'e' um auf die Ente zu wechsel und mit 'Space' das Wasser zu überwinden", {
-                    color: 'white',
-                    fontSize: '22px',
-        });
-    }
-}*/
 
 function gewonnen(player, ziel) {
     this.spielAmLaufen = false
