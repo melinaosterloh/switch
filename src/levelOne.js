@@ -358,7 +358,7 @@ class levelOne extends Phaser.Scene {
 
         //------KOLLISIONEN------//
         this.physics.add.collider(currentPlayer, platforms, detectGround, null, this);
-        this.physics.add.collider(currentPlayer, trees);
+        this.physics.add.collider(currentPlayer, trees, hitObstacle, null, this);
         this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
         this.physics.add.collider(platforms, ziel);
         this.physics.add.collider(currentPlayer, ziel, gewonnen, null, this);
@@ -375,7 +375,6 @@ class levelOne extends Phaser.Scene {
         keyObjK = this.input.keyboard.addKey('k'); // Get key object
         keyObkSpace = this.input.keyboard.addKey('space'); // Get key object
         keyObkEnter = this.input.keyboard.addKey('enter'); // Get key object
-
     }
 
     //##############
@@ -612,7 +611,7 @@ function movePlayerLvl1(that, direction, speed, popUp) {
 function moveGroundLvlOne(that, speed) {
     if(currentPlayer.getCenter().x < 100 || currentPlayer.getCenter().x > 968){
         if(that.currentModel.name == "Katze" && keyObkSpace.isDown){
-            speed = speed * 3;
+            speed = speed * 4;
         } else {
             speed = speed * 2;
         }
