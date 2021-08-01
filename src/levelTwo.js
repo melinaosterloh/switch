@@ -428,12 +428,10 @@ class levelTwo extends Phaser.Scene {
             }
 
             currentPlayer.setVelocityX(0);
-            die(this)
 
-            if (this.spielAmLaufen == false) {
+            if (this.spielAmLaufen == false && this.leben > 0) {
 
 
-                currentPlayer.setVelocityX(0);
                 lebenLabel.setText('Press "ENTER"                    GEWONNEN :)')
                 win(this)
 
@@ -442,6 +440,8 @@ class levelTwo extends Phaser.Scene {
                     levelMusic.stop();
                     console.log("Level 2 auf 3 wurde gewechselt!")
                 }
+            } else {
+                die(this)
             }
         }
         collisionObstacle = false;

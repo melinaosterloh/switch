@@ -438,16 +438,11 @@ class levelThree extends Phaser.Scene {
         } else {
 
             currentPlayer.setVelocityX(0);
-            die(this)
-
             if (this.leben <= 0) {
                 this.leben = 0;
             }
 
             if (this.spielAmLaufen == false) {
-
-
-                currentPlayer.setVelocityX(0);
                 lebenLabel.setText('GEWONNEN :)')
                 win(this)
 
@@ -457,6 +452,8 @@ class levelThree extends Phaser.Scene {
                 } */
 
 
+            } else {
+                die(this)
             }
         }
         collisionObstacle = false;
