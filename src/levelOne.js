@@ -233,7 +233,7 @@ class levelOne extends Phaser.Scene {
                 platforms.create(200 + (400 * i), 707 - 16, 'ground')
             } else {
                 if (Math.random() < 0.3) {
-                    platforms.create(200 + (400 * i), 707 - 16, 'water')
+                    platforms.create(200 + (400 * i), 707 - 16, 'ground')
                 } else {
                     xValue = 200 + (400 * i)
                     if ('bank') {
@@ -632,15 +632,26 @@ function movePlayerLvl1(that, direction, speed, popUp) {
                 break;
         }
     } else {
-
-        if (currentPlayer.getCenter().x > 100 || currentPlayer.getCenter().x < 1200) {
+        // Hier findet die zentrale Bewegung statt, sprich wenn der Spieler sich in der Mitte des "Spielfelds" befindet
+        if (currentPlayer.getCenter().x > 100 && currentPlayer.getCenter().x < 968) {
+            console.log("Rand noch nicht erreicht")
             currentPlayer.setVelocityX(speed);
+            console.log(currentPlayer.getCenter())
         } else {
+            console.log("Rand erreicht")
+            console.log(currentPlayer.getCenter())
             currentPlayer.setVelocityX(0);
             if (direction == 'left') {
+                currentPlayer.setVelocityX(speed);
                 background.tilePositionX -= 2
             } else {
-                background.tilePositionX += 2
+                if(that.currentModel.name == "Katze"){
+                    currentPlayer.setVelocityX(speed*4);
+                    background.tilePositionX += 4
+                } else {
+                    currentPlayer.setVelocityX(speed*2);
+                    background.tilePositionX += 2
+                }
             }
         }
         currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
@@ -649,7 +660,13 @@ function movePlayerLvl1(that, direction, speed, popUp) {
 
 
 function moveGroundLvlOne(that, speed) {
-
+    if(currentPlayer.getCenter().x < 100 || currentPlayer.getCenter().x > 968){
+        if(that.currentModel.name == "Katze" && keyObkSpace.isDown){
+            speed = speed * 4;
+        } else {
+            speed = speed * 2;
+        }
+    }
 
     if (that.currentGround != undefined && that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
         speed = 0;
