@@ -2,6 +2,8 @@ function detectGround(player, ground) {
     this.currentGround = ground;
     if ((ground.texture.key == 'water' || ground.texture.key == 'puddle') && player.texture.key != 'Ente') {
         player.setX(player.x - 200)
+        this.leben -= 1
+        player.setX(player.x - 100)
     }
 }
 
