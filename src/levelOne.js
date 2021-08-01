@@ -13,7 +13,6 @@ var playerPosition;
 var score = 0;
 var scoreText;
 var info;
-<<<<<<< HEAD
 var info2;
 var currentModel;
 var currentGround;
@@ -42,57 +41,16 @@ var anzahlBodenplatten;
 var buttonHome;
 var buttonSound;
 var buttonClick;
+var clickCount;
 
 var levelMusic;
 var jumpSound;
-var collectedLight = false;
-var collectLight;
-var lostLife;
 var gameOverSound;
-var gameOverWindow
-var gameIsOver = false;
 var waterSound;
 
 var xTreeValue;
 var xValue;
 var rnd;
-=======
-var currentModel
-var currentGround
-var currentPlayer
-var lebenLabel
-var cursors
-var keyObjE
-var keyObjA
-var keyObjK
-var keyObkSpace
-var keyObkEnter
-
-var background
-var platforms
-var trees
-var ziel
-var ziele
-var lights
-var darknesses
-var darkness
-var ghosts
-var ghosts2
-var ghost
-var ghost2
-var anzahlBodenplatten
-var buttonHome
-var buttonSound
-
-var levelMusic
-var jumpSound
-var collectLight
-var lostLife
-
-var xTreeValue
-var xValue
-var rnd
->>>>>>> main
 
 var collisionObstacle = false;
 var defaultDarknessSpeed = 0.5;
@@ -108,53 +66,6 @@ class levelOne extends Phaser.Scene {
     }
 
     //Funktion um Bilder/Sprites im Voraus zu laden
-<<<<<<< HEAD
-//##############
-///PRELOAD
-//##############
-preload() {
-    this.load.image('sky', 'assets/background.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('water', 'assets/water.png');
-    this.load.image('tree0', 'assets/Bank.png');
-    this.load.image('tree1', 'assets/laterne.png');
-    this.load.image('tree2', 'assets/eimer.png');
-    this.load.image('light', 'assets/light.png');
-    this.load.image('home', 'assets/buttonHome.png');
-    this.load.image('soundOn', 'assets/tonAn.png');
-    this.load.image('gameOverWindow', 'assets/gameOver.png');
-
-    this.load.audio('levelSound', ['assets/levelSound.mp3']);
-    this.load.audio('buttonClick', ['assets/buttonClick.mp3']);
-    this.load.audio('jumpSound', ['assets/jumpSound.mp3']);
-    this.load.audio('collectLight', ['assets/collectLight.mp3']);
-    this.load.audio('lostLife', ['assets/lifeLost.mp3']);
-    this.load.audio('gameOverSound', ['assets/gameOver.mp3']);
-    this.load.audio('waterSound', ['assets/water.mp3']);
-
-    this.load.audio('duckSound', ['assets/duck.mp3']);
-    this.load.audio('monkeySound', ['assets/monkey.mp3']);
-    this.load.audio('catSound', ['assets/cat.mp3']);
-
-    this.enteModel = {
-        name: 'Ente',
-        speed: 90,
-        jumping: false,
-        supermodel: 'Ente'
-    };
-    this.affeModel = {
-        name: 'Affe',
-        speed: 110,
-        jumping: false,
-        supermodel: 'Affe'
-    };
-    this.katzeModel = {
-        name: 'Katze',
-        speed: 110,
-        jumping: false,
-        supermodel: 'SuperCat'
-    };
-=======
     //##############
     ///PRELOAD
     //##############
@@ -172,8 +83,8 @@ preload() {
         this.load.audio('levelSound', ['assets/levelSound.mp3'])
         this.load.audio('buttonClick', ['assets/buttonClick.mp3'])
         this.load.audio('jumpSound', ['assets/jumpSound.mp3'])
-        this.load.audio('collectLight', ['assets/collectLight.mp3'])
-        this.load.audio('lostLife', ['assets/lifeLost.mp3'])
+        this.load.audio('waterSound', ['assets/water.mp3'])
+        this.load.audio('gameOverSound', ['assets/gameOver.mp3'])
 
         this.load.audio('duckSound', ['assets/duck.mp3'])
         this.load.audio('monkeySound', ['assets/monkey.mp3'])
@@ -200,7 +111,6 @@ preload() {
 
         this.leben = 3;
         this.spielAmLaufen = true;
->>>>>>> main
 
         this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
             frameWidth: 62,
@@ -236,78 +146,11 @@ preload() {
         });
     }
 
-<<<<<<< HEAD
-//##############
-///CREATE
-//##############
-create() {
-    console.log("Level 1 beginnt.");
-    //------HINTERGRUND-----//
-    //x und y parameter werden übergeben (Halbiert der gesamten Größe)
-    background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky');
-
-    // Hintergrundmusik hinzufügen 
-    levelMusic = this.sound.add('levelSound', { loop: true });
-    levelMusic.play();
-
-    // Sound für Button Click hinzufügen
-    buttonClick = this.sound.add('buttonClick', { loop: false });
-
-    // Sound wenn einer der Spieler springt
-    jumpSound = this.sound.add('jumpSound', {loop: false});
-
-    /* // Sound wenn Spieler Lichtpunkt sammelt
-    collectLight = this.sound.add('collectLight', {loop: false});
-    collectLight.play(); */
-
-    // Sound wenn Spieler ein Leben verliert
-    lostLife = this.sound.add('lostLife', {loop: false});
-
-    // Sound bei Game Over
-    gameOverSound = this.sound.add('gameOverSound', {loop: false});
-
-     // Sound wenn Ente ins Wasser springt
-     waterSound = this.sound.add('waterSound', {loop: false});
-
-    // Tiere kriegen einen Sound bei Aktivierung per Keyboard Taste
-    duckSound = this.sound.add('duckSound', {loop: false});
-    monkeySound = this.sound.add('monkeySound', {loop: false});
-    catSound = this.sound.add('catSound', {loop: false});
-
-    // Button zum Hauptmenü zurück
-    var buttonHome = this.add.image(1288, 35, 'home').setInteractive({
-        useHandCursor: true
-      });
-    buttonHome.on('pointerdown', function(event){ // Start game on click
-        buttonClick.play();
-        this.scene.stop('levelOne');
-        this.scene.start('mainMenu');
-        levelMusic.stop();
-        console.log("Zurück zum Hauptmenü");
-    }, this);
-
-    // Button Sound an/Sound aus 
-    var clickCount = 0;
-    var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
-        useHandCursor: true
-      });
-    buttonSound.on('pointerdown', function(event){
-        if (clickCount == 0) {
-            buttonClick.play();
-            levelMusic.stop();
-            clickCount = 1;
-            console.log("Sound aus");
-        } else {
-            buttonClick.play();
-            levelMusic.play();
-            clickCount = 0;
-            console.log("Sound an");
-        }
-=======
     //##############
     ///CREATE
     //##############
     create() {
+        console.log("Level 1 beginnt.");
         //------HINTERGRUND-----//
         //x und y parameter werden übergeben (Halbiert der gesamten Größe)
         background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky');
@@ -315,52 +158,26 @@ create() {
         // Hintergrundmusik hinzufügen 
         levelMusic = this.sound.add('levelSound', {
             loop: true
->>>>>>> main
         });
         levelMusic.play();
 
         // Sound für Button Click hinzufügen
-        var buttonClick = this.sound.add('buttonClick', {
+        buttonClick = this.sound.add('buttonClick', {
             loop: false
         });
 
-<<<<<<< HEAD
-    anzahlBodenplatten = 10;
-
-    for (let i = 0; i <= anzahlBodenplatten; i++) {
-        if (i == 0) {
-            platforms.create(200 + (400 * i), 707 - 16, 'ground');
-        } else if (i ==(anzahlBodenplatten-3)) {
-            platforms.create(200 + (400 * i), 707 - 16, 'ground');
-            } else {
-            if (Math.random() < 0.3) {
-                platforms.create(200 + (400 * i), 707 - 16, 'water');
-            } else {
-                xValue = 200 + (400 * i);
-                if ('tree0') {
-                    xTreeValue = Phaser.Math.Between(xValue - 50, xValue + 50);
-                } else {
-                    xTreeValue = Phaser.Math.Between(xValue - 200, xValue + 200);
-                }
-
-                rnd = Phaser.Math.Between(0, 3);
-
-                createTree(rnd, xTreeValue);
-
-                platforms.create(xValue, 707 - 16, 'ground');
-=======
         // Sound wenn einer der Spieler springt
         jumpSound = this.sound.add('jumpSound', {
             loop: false
         });
 
-        // Sound wenn Spieler Lichtpunkt sammelt
-        collectLight = this.sound.add('collectLight', {
+        // Geräusch, wenn Ente das Wasser berührt
+        waterSound = this.sound.add('waterSound', {
             loop: false
         });
 
-        // Sound wenn Spieler ein Leben verliert
-        lostLife = this.sound.add('lostLife', {
+        // Game Over Soundeffekt
+        gameOverSound = this.sound.add('gameOverSound', {
             loop: false
         });
 
@@ -376,7 +193,7 @@ create() {
         });
 
         // Button zum Hauptmenü zurück
-        var buttonHome = this.add.image(1288, 35, 'home').setInteractive({
+        buttonHome = this.add.image(1288, 35, 'home').setInteractive({
             useHandCursor: true
         });
         buttonHome.on('pointerdown', function (event) { // Start game on click
@@ -388,8 +205,8 @@ create() {
         }, this);
 
         // Button Sound an/Sound aus 
-        var clickCount = 0;
-        var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
+        clickCount = 0;
+        buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
             useHandCursor: true
         });
         buttonSound.on('pointerdown', function (event) {
@@ -403,7 +220,6 @@ create() {
                 levelMusic.play();
                 clickCount = 0;
                 console.log("Sound an")
->>>>>>> main
             }
         });
 
@@ -430,13 +246,7 @@ create() {
                         xTreeValue = Phaser.Math.Between(xValue - 200, xValue + 200)
                     }
 
-<<<<<<< HEAD
-    //------DUNKELHEIT------//
-    darknesses = this.physics.add.staticGroup();
-    darkness = darknesses.create(-650, 630 / 2 + 60, 'darkness');
-=======
                     rnd = Phaser.Math.Between(0, 3)
->>>>>>> main
 
                     createTree(rnd, xTreeValue)
 
@@ -445,176 +255,6 @@ create() {
             }
         }
 
-<<<<<<< HEAD
-    //------PLAYER-----//
-    this.currentModel = this.enteModel;
-    currentPlayer = this.physics.add.sprite(200, 600, this.currentModel.name);
-
-    //------LEBEN------//
-    lebenLabel = this.add.text(16, 16, 'Leben: ' + this.leben, {
-        fontSize: '32px',
-        fill: 'white'
-    });
-
-    //Bounce bewirkt, dass der Player kurz 'hüpft' wenn er landet
-    currentPlayer.setBounce(0.2);
-    //Verhindert, dass der Spieler über das Ende des Bildschirms hinaus laufen/springen kann
-    currentPlayer.setCollideWorldBounds(true);
-
-    //------PUNKTE------//
-    scoreText = this.add.text(16, 50, 'Score: 0', { fontSize: '32px', fill: 'white'});
-
-    //Levelinformation -- MAU EINGEFÜGT
-    info = this.add.text(600, 200, "Hallo! Toll, dass du uns begleitest!", {
-        color: 'white',
-        fontSize: '24px'
-    });
-
-    info2 = this.add.text(600, 230, "Steuere mich mit den Pfeiltasten. (links, rechts, springen).", {
-        color: 'white',
-        fontSize: '24px'
-    });
-
-    //Shows info when player is near a Sign
-
-    /* popUp2 = this.add.text(1650, 580, "new Weapon to fell the tree", {
-        color: 'white',
-        fontSize: '22px',
-    });
-    popUp1.setVisible(false);
-    popUp2.setVisible(false);
-
-    popUp3 = this.add.text(4780, 560, "Jump into that Portal to move on", {
-        color: 'white',
-        fontSize: '22px',
-      });
-    popUp3.setVisible(false); */
-
-    //------KAMERA-----//
-    //Kamera folgt Figur
-    this.cameras.main.setBounds(0, 0, 1400, 707);
-    this.physics.world.setBounds(0, 0, 1000, 707);
-    this.cameras.main.startFollow(currentPlayer, true, 0.5, 0.5);
-
-
-    //ANIMATIONEN SPIELER MIT SPRITESHEET
-
-    createDeathAnimation(this, this.enteModel.name, 13);
-    createDeathAnimation(this, this.affeModel.name, 11);
-    createDeathAnimation(this, this.katzeModel.name, 9);
-
-    createTurnAnimation(this, this.enteModel.name, 4);
-    createTurnAnimation(this, this.affeModel.name, 4);
-    createTurnAnimation(this, this.katzeModel.name, 4);
-    createTurnAnimation(this, this.katzeModel.supermodel, 4);
-
-    createMoveAnimation(this, 'right', this.enteModel.name, 5, 8);
-    createMoveAnimation(this, 'right', this.affeModel.name, 5, 8);
-    createMoveAnimation(this, 'right', this.katzeModel.name, 5, 8);
-    createMoveAnimation(this, 'right', this.katzeModel.supermodel, 0, 5);
-
-    createMoveAnimation(this, 'left', this.enteModel.name, 0, 3);
-    createMoveAnimation(this, 'left', this.affeModel.name, 0, 3);
-    createMoveAnimation(this, 'left', this.katzeModel.name, 0, 3);
-//    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 2);
-
-    createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10);
-
-    createMoveAnimation(this, 'swim_right', this.enteModel.name, 11, 12);
-    createMoveAnimation(this, 'swim_left', this.enteModel.name, 9, 10);
-
-    createZielAnimation(this);
-    createDarknessAnimation(this);
-    createGhostAnimation(this);
-    createGhostAnimation2(this);
-
-    //------KOLLISIONEN------//
-   currentPlayer.body.setCollideWorldBounds(true);
-    this.physics.add.collider(currentPlayer, platforms, detectGround, null, this); //Funktion für 1 Leben weniger 
-    /* this.physics.add.collider(this.plane, this.bitcoin, function (plane, bitcoin) {
-        ding.play();
-        bitcoin.destroy();
-    }); */
-    /* this.physics.add.collider(currentPlayer, trees);
-    this.physics.add.collider(currentPlayer, darkness, this, function (){
-        //this.leben = 0;
-        levelMusic.stop();
-        gameOver.play();
-        
-    }, null, this); */
-    this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
-
-    this.physics.add.collider(platforms, ziel);
-    this.physics.add.collider(currentPlayer, ziel, gewonnen, null, this); //Gewonnen -> gewonnen sound? oder erst Level 3
-    this.physics.add.collider(platforms, ghost);
-
-    this.physics.add.collider(lights, platforms);
-    this.physics.add.collider(lights, trees);
-    this.physics.add.overlap(currentPlayer, lights, collectLights, null, this); //Lichtpunkte sammeln 
-
-    //Eingebauter Keyboard Manager
-    cursors = this.input.keyboard.createCursorKeys();
-    keyObjE = this.input.keyboard.addKey('e'); // Get key object
-    keyObjA = this.input.keyboard.addKey('a'); // Get key object
-    keyObjK = this.input.keyboard.addKey('k'); // Get key object
-    keyObkSpace = this.input.keyboard.addKey('space'); // Get key object
-    keyObkEnter = this.input.keyboard.addKey('enter'); // Get key object
-    
-    
-}
-
-//##############
-///UPDATE
-//##############
-update() {
-    ziel.anims.play('ziel', true);
-    darkness.anims.play('darkness', true);
-    ghost.anims.play('ghost', true);
-    ghost2.anims.play('ghost2', true);
-    lebenLabel.setText('Leben: ' + this.leben);
-
-    if (this.leben > 0 && this.spielAmLaufen) {
-        moveDarkness(0.5);
-        if (cursors.left.isDown) {
-            moveGroundLvlOne(this, 2);
-            movePlayer(this, 'left', this.currentModel.speed);
-        }
-        //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
-        else if (cursors.right.isDown) {
-            moveDarkness(-1);
-            moveGroundLvlOne(this, -2);
-            movePlayer(this, 'right', this.currentModel.speed);
-        }
-        //Start-Stop-Animation
-        else {
-            if (keyObkSpace.isDown) {
-                switch (this.currentModel.name) {
-                    case 'Ente':
-                        currentPlayer.setVelocityX(0);
-                        currentPlayer.anims.play(this.currentModel.name + '_turn');
-                        break;
-                    case 'Affe':
-                        currentPlayer.setVelocityX(0);
-                        if (this.currentModel.jumping) {
-                        currentPlayer.anims.play(this.currentModel.name + '_jump');
-                        }
-                        break;
-                    case 'Katze':
-                        currentPlayer.setVelocityX(0);
-                        currentPlayer.anims.play(this.currentModel.name + '_turn');
-                        break;
-                }
-            } else {
-                currentPlayer.setVelocityX(0);
-                currentPlayer.anims.play(this.currentModel.name + '_turn');
-            }
-        }
-
-        //Wenn Pfeiltaste oben gedrückt ist und der Player den Boden berührt
-        //Damit er nur vom Boden springen kann!!
-        if (currentPlayer.body.touching.down) {
-            this.currentModel.jumping = false;
-=======
         ziel = ziele.create((anzahlBodenplatten - 2) * 400 - 60, 580, 'ziel');
 
         //------LICHTKUGELN------//
@@ -794,7 +434,6 @@ update() {
         keyObkEnter = this.input.keyboard.addKey('enter'); // Get key object
 
     }
->>>>>>> main
 
     //##############
     ///UPDATE
@@ -844,38 +483,6 @@ update() {
                     currentPlayer.anims.play(this.currentModel.name + '_turn');
                 }
             }
-<<<<<<< HEAD
-        }
-
-        if (keyObjE.isDown) {
-            this.currentModel = this.enteModel;
-            duckSound.play();
-        }
-
-        if (keyObjA.isDown) {
-            this.currentModel = this.affeModel;
-            monkeySound.play();
-        }
-
-        if (keyObjK.isDown) {
-            this.currentModel = this.katzeModel;
-            catSound.play();
-        }
-
-    } else if(!gameIsOver){
-        gameOverSound.play();
-       this.scene.start('gameOver');
-        //console.log("game vorbei");
-        //currentPlayer.setVelocityX(0);
-        die(this);
-        gameIsOver = true;
-        //console.log("Game Over wird angezeigt");   
-    }
-    else {  
-        gameIsOver = false;
-        if(this.spielAmLaufen == false){
-            
-=======
 
             //Wenn Pfeiltaste oben gedrückt ist und der Player den Boden berührt
             //Damit er nur vom Boden springen kann!!
@@ -933,9 +540,12 @@ update() {
 
             if (this.leben <= 0) {
                 this.leben = 0;
+                console.log("Game Over in Level 1");
+                gameOverSound.play();
+                this.scene.start('gameOver');
+
             }
     
->>>>>>> main
 
             currentPlayer.setVelocityX(0);
             if (this.spielAmLaufen == false && this.leben > 0) {
@@ -967,53 +577,29 @@ function hitDarkness(player, darkness) {
 function createTree(rnd, x) {
     switch (rnd) {
         case 1:
-<<<<<<< HEAD
-            scale = 0.5;
-            var tree = trees.create(x, 620, 'tree0');
-            tree.setScale(scale);
-            tree.body.width = tree.body.width * scale;
-            tree.body.height = tree.body.height * scale;
-=======
             scale = 0.5
             var tree = trees.create(x, 620, 'bank')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
->>>>>>> main
             tree.body.x = tree.x - tree.width * scale / 2;
             tree.body.y = tree.y - tree.height * scale / 2;
             break;
         case 2:
-<<<<<<< HEAD
-            scale = 0.6;
-            var tree = trees.create(x, 510, 'tree1');
-            tree.setScale(scale);
-            tree.body.width = tree.body.width * scale;
-            tree.body.height = tree.body.height * scale;
-=======
             scale = 0.6
             var tree = trees.create(x, 510, 'lantern')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
->>>>>>> main
             tree.body.x = tree.x - tree.width * scale / 2;
             tree.body.y = tree.y - tree.height * scale / 2;
             break;
         case 3:
-<<<<<<< HEAD
-            scale = 0.4;
-            var tree = trees.create(x, 625, 'tree2');
-            tree.setScale(scale);
-            tree.body.width = tree.body.width * scale;
-            tree.body.height = tree.body.height * scale;
-=======
             scale = 0.4
             var tree = trees.create(x, 625, 'bin')
             tree.setScale(scale)
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
->>>>>>> main
             tree.body.x = tree.x - tree.width * scale / 2;
             tree.body.y = tree.y - tree.height * scale / 2;
             break;
@@ -1075,19 +661,14 @@ function movePlayerLvl1(that, direction, speed, popUp) {
 
 
 function moveGroundLvlOne(that, speed) {
-<<<<<<< HEAD
-    
-    if(that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown){
-        waterSound.play();
-=======
 
 
     if (that.currentGround != undefined && that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
+        waterSound.play();
         speed = 0;
     }
 
     if (collisionObstacle) {
->>>>>>> main
         speed = 0;
     }
 
@@ -1111,50 +692,15 @@ function moveGroundLvlOne(that, speed) {
     });
     ziel.x = ziel.x + speed;
     ziel.body.x = ziel.body.x + speed;
-<<<<<<< HEAD
-    info.x = info.x + speed;
-    info2.x = info.x + speed;
-}
-
-
-
-
-/*function die(that) {
-    currentPlayer.anims.play(that.currentModel.name + '_death');
-    
-}
-
-function popUp1(player, ground) {
-    this.currentGround = ground;
-    if (ground.texture.key == 'water' && player.texture.key != 'Ente') {
-
-        player.setX(player.x - 100)
-        popUp1 = this.add.text(600,200, "Drücke 'e' um auf die Ente zu wechsel und mit 'Space' das Wasser zu überwinden", {
-                    color: 'white',
-                    fontSize: '22px',
-        });
-    }
-}*/
-
-=======
     info.x = info.x + speed
 
 }
 
->>>>>>> main
 function gewonnen(player, ziel) {
     this.spielAmLaufen = false;
 }
 
-<<<<<<< HEAD
-function collectLights (currentPlayer, light,) { 
-    // Sound wenn Spieler Lichtpunkt sammelt
-    collectLight = this.sound.add('collectLight', 1, false);
-    collectLight.play();
-    console.log("Lichtpunkt gesammelt");
-=======
 function collectLights(player, light, ) {
->>>>>>> main
     light.disableBody(true, true);
     score += 10;
     scoreText.setText('Score: ' + score);

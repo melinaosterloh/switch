@@ -1,4 +1,6 @@
-var gameOverBackground;
+// Fenster, dass angezeigt wird, wenn Level 3 geschafft wurde
+
+var winScreen;
 var goMainMenu;
 var goTryAgain;
 var goCloseWindow;
@@ -6,9 +8,11 @@ var buttonClick;
 
 class winGame extends Phaser.Scene {
 
-    constructor (config) {
+    constructor(config) {
         super(config);
-        Phaser.Scene.call(this, { key: 'winGame'});
+        Phaser.Scene.call(this, {
+            key: 'winGame'
+        });
     }
 
     preload() {
@@ -21,7 +25,7 @@ class winGame extends Phaser.Scene {
   
   
     create() {
-      var background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'winScreen');
+      winScreen = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'winScreen');
 
         // Sound für Button Click hinzufügen
        buttonClick = this.sound.add('buttonClick', { loop: false });
@@ -50,4 +54,3 @@ class winGame extends Phaser.Scene {
 
     }
   }
-  

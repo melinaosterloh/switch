@@ -1,3 +1,5 @@
+// Fenster, welches bei einem Game Over angezeigt wird
+
 var gameOverBackground;
 var goMainMenu;
 var goTryAgain;
@@ -22,7 +24,7 @@ class gameOver extends Phaser.Scene {
   
   
     create() {
-      var background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'overlay');
+      gameOverBackground = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'overlay');
 
         // Sound für Button Click hinzufügen
        buttonClick = this.sound.add('buttonClick', { loop: false });

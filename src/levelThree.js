@@ -8,21 +8,6 @@ var katzeModel;
 var catSound;
 var leben;
 var spielAmLaufen;
-<<<<<<< HEAD
-
-var currentPlayer;
-var lebenLabel;
-var cursors;
-var keyObjE;
-var keyObjA;
-var keyObjK;
-var keyObkSpace;
-var keyObkEnter;
-
-var background;
-var platforms;
-var trees;
-=======
 var currentPlayer
 var lebenLabel
 var cursors
@@ -37,7 +22,6 @@ var background_3
 var platforms3
 var trees
 var trees3
->>>>>>> main
 /*var ziel
 var ziele*/
 var lights;
@@ -59,12 +43,8 @@ var buttonClick;
 var clickCount;
 var levelMusic;
 var jumpSound;
-var collectLight;
-var lostLife;
 var gameOverSound;
-var gameOverWindow;
-var gameIsOver = false;
-var winGame = false;
+var winThisGame = false;
 var waterSound;
 var winSound;
 
@@ -85,62 +65,9 @@ class levelThree extends Phaser.Scene {
 
     constructor(config) {
         super(config);
-<<<<<<< HEAD
-        Phaser.Scene.call(this, { key: 'levelThree'});
-    }
-//Funktion um Bilder/Sprites im Voraus zu laden
-//##############
-///PRELOAD
-//##############
-preload() {
-    this.load.image('homeArea', 'assets/background_3.png');
-    this.load.image('ground', 'assets/strasse.png');
-    this.load.image('water', 'assets/pfueze.png')
-    this.load.image('meadow', 'assets/wiese.png')
-    this.load.image('fence', 'assets/zaun.png')
-    this.load.image('tree0', 'assets/fahrrad.png')
-    this.load.image('tree1', 'assets/laterne.png')
-    this.load.image('tree2', 'assets/busch.png')
-    this.load.image('light', 'assets/light.png')
-    this.load.image('house', 'assets/haus.png')
-    this.load.image('home', 'assets/buttonHome.png')
-    this.load.image('soundOn', 'assets/tonAn.png')
-
-    this.load.audio('levelSound', ['assets/levelSound.mp3']);
-    this.load.audio('buttonClick', ['assets/buttonClick.mp3']);
-    this.load.audio('jumpSound', ['assets/jumpSound.mp3']);
-    this.load.audio('collectLight', ['assets/collectLight.mp3']);
-    this.load.audio('lostLife', ['assets/lifeLost.mp3']);
-    this.load.audio('gameOverSound', ['assets/gameOver.mp3']);
-    this.load.audio('waterSound', ['assets/water.mp3']);
-    this.load.audio('winSound', ['assets/win.mp3']);
-
-    this.load.audio('duckSound', ['assets/duck.mp3']);
-    this.load.audio('monkeySound', ['assets/monkey.mp3']);
-    this.load.audio('catSound', ['assets/cat.mp3']);
-
-    this.enteModel = {
-        name: 'Ente',
-        speed: 50,
-        jumping: false,
-        supermodel: 'Ente'
-    }
-    this.affeModel = {
-        name: 'Affe',
-        speed: 50,
-        jumping: false,
-        supermodel: 'Affe'
-    }
-    this.katzeModel = {
-        name: 'Katze',
-        speed: 50,
-        jumping: false,
-        supermodel: 'SuperCat'
-=======
         Phaser.Scene.call(this, {
             key: 'levelThree'
         });
->>>>>>> main
     }
     //Funktion um Bilder/Sprites im Voraus zu laden
     //##############
@@ -163,6 +90,12 @@ preload() {
         this.load.audio('levelSound', ['assets/levelSound.mp3'])
         this.load.audio('buttonClick', ['assets/buttonClick.mp3'])
         this.load.audio('jumpSound', ['assets/jumpSound.mp3'])
+        this.load.audio('waterSound', ['assets/water.mp3'])
+        this.load.audio('gameOverSound', ['assets/gameOver.mp3'])
+
+        this.load.audio('duckSound', ['assets/duck.mp3'])
+        this.load.audio('monkeySound', ['assets/monkey.mp3'])
+        this.load.audio('catSound', ['assets/cat.mp3'])
 
         this.enteModel = {
             name: 'Ente',
@@ -220,83 +153,23 @@ preload() {
         });
     }
 
-<<<<<<< HEAD
-//##############
-///CREATE
-//##############
-create() {
-    console.log("Level 3 beginnt.");
-    //------HINTERGRUND-----//
-    //x und y parameter werden übergeben (Halbiert der gesamten Größe)
-    background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'homeArea');
-
-    // Hintergrundmusik hinzufügen 
-    levelMusic = this.sound.add('levelSound', { loop: true });
-    levelMusic.play();
-
-    // Sound für Button Click hinzufügen
-    buttonClick = this.sound.add('buttonClick', { loop: false });
-
-    // Sound wenn einer der Spieler springt
-    jumpSound = this.sound.add('jumpSound', {loop: false});
-
-    // Sound wenn Spieler Lichtpunkt sammelt
-    collectLight = this.sound.add('collectLight', {loop: false});
-
-    // Sound wenn Spieler ein Leben verliert
-    lostLife = this.sound.add('lostLife', {loop: false});
-
-    // Sound bei Game Over
-    gameOverSound = this.sound.add('gameOverSound', {loop: false});
-
-     // Sound wenn Ente ins Wasser springt
-     waterSound = this.sound.add('waterSound', {loop: false});
-
-    // Sound wenn das Haus am Ende des Levels erreicht wurde
-    winSound = this.sound.add('winSound', {loop: false});
-
-    // Tiere kriegen einen Sound bei Aktivierung per Keyboard Taste
-    duckSound = this.sound.add('duckSound', {loop: false});
-    monkeySound = this.sound.add('monkeySound', {loop: false});
-    catSound = this.sound.add('catSound', {loop: false});
-
-    // Button zum Hauptmenü zurück
-    buttonHome = this.add.image(1288, 35, 'home').setInteractive({
-        useHandCursor: true
-      });
-    buttonHome.on('pointerdown', function(event){ // Start game on click
-        buttonClick.play();
-        this.scene.stop('levelThree');
-        this.scene.start('mainMenu');
-        levelMusic.stop();
-        console.log("Zurück zum Hauptmenü")
-    }, this);
-
-    // Button Sound an/Sound aus 
-    clickCount = 0;
-    buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
-        useHandCursor: true
-      });
-    buttonSound.on('pointerdown', function(event){
-        if (clickCount == 0) {
-            buttonClick.play();
-=======
     //##############
     ///CREATE
     //##############
     create() {
+        console.log("Level 3 beginnt.");
         //------HINTERGRUND-----//
         //x und y parameter werden übergeben (Halbiert der gesamten Größe)
         background_3 = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky3');
 
         // Hintergrundmusik hinzufügen 
-        var levelMusic = this.sound.add('levelSound', {
+        levelMusic = this.sound.add('levelSound', {
             loop: true
         });
         levelMusic.play();
 
         // Sound für Button Click hinzufügen
-        var buttonClick = this.sound.add('buttonClick', {
+        buttonClick = this.sound.add('buttonClick', {
             loop: false
         });
 
@@ -305,12 +178,32 @@ create() {
             loop: false
         });
 
+        // Geräusch, wenn Ente das Wasser berührt
+        waterSound = this.sound.add('waterSound', {
+            loop: false
+        });
+
+        // Game Over Soundeffekt
+        gameOverSound = this.sound.add('gameOverSound', {
+            loop: false
+        });
+
+        // Tiere kriegen einen Sound bei Aktivierung per Keyboard Taste
+        duckSound = this.sound.add('duckSound', {
+            loop: false
+        });
+        monkeySound = this.sound.add('monkeySound', {
+            loop: false
+        });
+        catSound = this.sound.add('catSound', {
+            loop: false
+        });
+
         // Button zum Hauptmenü zurück
-        var buttonHome = this.add.image(1288, 35, 'home').setInteractive({
+        buttonHome = this.add.image(1288, 35, 'home').setInteractive({
             useHandCursor: true
         });
         buttonHome.on('pointerdown', function (event) { // Start game on click
->>>>>>> main
             buttonClick.play();
             this.scene.stop('levelThree');
             this.scene.start('mainMenu');
@@ -319,8 +212,8 @@ create() {
         }, this);
 
         // Button Sound an/Sound aus 
-        var clickCount = 0;
-        var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
+        clickCount = 0;
+        buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
             useHandCursor: true
         });
         buttonSound.on('pointerdown', function (event) {
@@ -572,7 +465,6 @@ create() {
                 }
             }
 
-<<<<<<< HEAD
         if (keyObjE.isDown) {
             this.currentModel = this.enteModel;
             duckSound.play();
@@ -587,47 +479,23 @@ create() {
             this.currentModel = this.katzeModel;
             catSound.play();
         }
-=======
-            if (keyObjE.isDown) {
-                this.currentModel = this.enteModel
-            }
-
-            if (keyObjA.isDown) {
-                this.currentModel = this.affeModel
-            }
-
-            if (keyObjK.isDown) {
-                this.currentModel = this.katzeModel
-            }
->>>>>>> main
 
         } else {
 
             currentPlayer.setVelocityX(0);
-<<<<<<< HEAD
-            die(this)
-
-        if(this.spielAmLaufen == false){
-            if(!winGame){
-                console.log("Win Sound wird gespielt");
-                winSound.play();
-               // this.scene.start('winGame');
-                winGame = true;
-            } 
-                //currentPlayer.setVelocityX(0);
-                lebenLabel.setText('GEWONNEN :)');
-                win(this);
-                
-             
-=======
             if (this.leben <= 0) {
                 this.leben = 0;
+                console.log("Game Over in Level 3");
+                gameOverSound.play();
+                this.scene.start('gameOver');
             }
 
             if (this.spielAmLaufen == false) {
                 lebenLabel.setText('GEWONNEN :)')
+                console.log("Gewonnen!");
+                winSound.play();
+                this.scene.start('winGame');
                 win(this)
->>>>>>> main
 
                 /* if (gameOver == true){
                     data.menuMusicData.stop(); // Funktion, dass Musik bei Game over stoppt????
@@ -734,16 +602,12 @@ function movePlayerLvl3(that, direction, speed) {
 
 function moveGroundLvlThree(that, speed) {
 
-<<<<<<< HEAD
-    if(that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown){
-        waterSound.play();
-=======
     if (that.currentGround != undefined && that.currentGround.texture.key == "puddle" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
+        waterSound.play();
         speed = 0;
     }
 
     if(collisionObstacle){
->>>>>>> main
         speed = 0;
     }
 
