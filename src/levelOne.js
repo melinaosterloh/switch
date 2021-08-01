@@ -111,7 +111,7 @@ class levelOne extends Phaser.Scene {
 
         this.leben = 3;
         this.spielAmLaufen = true;
-        this.defaultDarknessSpeed = 0;
+        this.defaultDarknessSpeed = 0.5;
 
         this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
             frameWidth: 62,
@@ -505,13 +505,6 @@ class levelOne extends Phaser.Scene {
     }
 }
 
-//Funktionien für die Animationen im Spiel
-function hitDarkness(player, darkness) {
-    this.leben = 0;
-}
-
-
-
 //Erstellen der Hindernisse
 function createTree(rnd, x) {
     switch (rnd) {
@@ -648,8 +641,4 @@ function moveGroundLvlOne(that, speed) {
     ziel.body.x = ziel.body.x + speed;
     info.x = info.x + speed
 
-}
-
-function gewonnen(player, ziel) {
-    this.spielAmLaufen = false;
 }

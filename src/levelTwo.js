@@ -614,19 +614,3 @@ function moveGroundLvlTwo(that, speed) {
     ziel.x = ziel.x + speed
     ziel.body.x = ziel.body.x + speed;
 }
-
-/*function popUp1(player, ground) {
-    this.currentGround = ground;
-    if (ground.texture.key == 'puddle' && player.texture.key != 'Ente') {
-
-        player.setX(player.x - 100)
-        popUp1 = this.add.text(600,200, "Drücke 'e' um auf die Ente zu wechsel und mit 'Space' das Wasser zu überwinden", {
-                    color: 'white',
-                    fontSize: '22px',
-        });
-    }
-}*/
-
-function gewonnen(player, ziel) {
-    this.spielAmLaufen = false
-}

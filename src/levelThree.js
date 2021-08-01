@@ -362,7 +362,6 @@ class levelThree extends Phaser.Scene {
         this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
         //    this.physics.add.collider(platforms3, ziel);
         this.physics.add.collider(currentPlayer, house, gewonnen, null, this);
-        this.physics.add.collider(darkness, fences, gewonnen, null, this);
         this.physics.add.collider(platforms3, ghost);
         this.physics.add.collider(platforms3, fences);
 
