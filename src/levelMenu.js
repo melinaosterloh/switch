@@ -72,6 +72,7 @@ class levelMenu extends Phaser.Scene {
                     useHandCursor: true
                   });
                 buttonLevel1.on('pointerdown', function(event){
+                    buttonClick.play();
                     this.scene.start('levelOne');
                     music.stop();
                     console.log("Level 1 wird gestartet")
@@ -82,6 +83,7 @@ class levelMenu extends Phaser.Scene {
                     useHandCursor: true
                   });
                 buttonLevel2.on('pointerdown', function(event){
+                    buttonClick.play();
                     this.scene.start('levelTwo');
                     music.stop();
                     console.log("Level 2 wird gestartet")
@@ -92,6 +94,7 @@ class levelMenu extends Phaser.Scene {
                     useHandCursor: true
                   });
                 buttonLevel3.on('pointerdown', function(event){
+                    buttonClick.play();
                     this.scene.start('levelThree');
                     music.stop();
                     console.log("Level 3 wird gestartet")

@@ -4,12 +4,6 @@ class mainMenu extends Phaser.Scene {
         super(config);
         Phaser.Scene.call(this, { key: 'mainMenu'});
     }
-    
-
-   /*  init()
-	{
-		this.cursors = this.input.keyboard.createCursorKeys()
-	} */
 
     preload(){
         this.load.image('background', 'assets/backgroundWithFence.png');
@@ -30,7 +24,6 @@ class mainMenu extends Phaser.Scene {
 
        // Hintergrundmusik hinzufügen 
        var music = this.sound.add('menuSound', { loop: true });
-       //music.play();
 
        // Sound für Button Click hinzufügen
        var buttonClick = this.sound.add('buttonClick', { loop: false });
@@ -45,13 +38,13 @@ class mainMenu extends Phaser.Scene {
           });
         buttonSound.on('pointerdown', function(event){
             if (clickCount == 0) {
-                music.stop();
                 buttonClick.play();
+                music.play();
                 clickCount = 1;
                 console.log("Sound aus")
             } else {
                 buttonClick.play();
-                music.play();
+                music.stop();
                 clickCount = 0;
                 console.log("Sound an")
             }
