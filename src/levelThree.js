@@ -1,8 +1,11 @@
 // Level Drei in der Wohnsiedlung
 
 var enteModel;
+var duckSound;
 var affeModel;
-var katzeModel
+var monkeySound;
+var katzeModel;
+var catSound;
 var leben;
 var spielAmLaufen;
 var currentPlayer
@@ -21,28 +24,39 @@ var trees
 var trees3
 /*var ziel
 var ziele*/
-var lights
-var darknesses
-var darkness
-var ghosts
-var ghosts2
-var ghost
-var ghost2
-var anzahlBodenplatten
-var house
-var houses
-var fences
-var fence
+var lights;
+var darknesses;
+var darkness;
+var ghosts;
+var ghosts2;
+var ghost;
+var ghost2;
+var anzahlBodenplatten;
+var house;
+var houses;
+var fences;
+var fence;
 
-var xTreeValue
-var xValue
-var rnd
+var buttonHome;
+var buttonSound;
+var buttonClick;
+var clickCount;
+var levelMusic;
+var jumpSound;
+var gameOverSound;
+var winThisGame = false;
+var waterSound;
+var winSound;
 
-var playerPosition
+var xTreeValue;
+var xValue;
+var rnd;
+
+var playerPosition;
 var score = 0;
 var scoreText;
-var currentModel
-var currentGround
+var currentModel;
+var currentGround;
 
 var collisionObstacle = false;
 var defaultDarknessSpeed = 0.8;
@@ -76,6 +90,12 @@ class levelThree extends Phaser.Scene {
         this.load.audio('levelSound', ['assets/levelSound.mp3'])
         this.load.audio('buttonClick', ['assets/buttonClick.mp3'])
         this.load.audio('jumpSound', ['assets/jumpSound.mp3'])
+        this.load.audio('waterSound', ['assets/water.mp3'])
+        this.load.audio('gameOverSound', ['assets/gameOver.mp3'])
+
+        this.load.audio('duckSound', ['assets/duck.mp3'])
+        this.load.audio('monkeySound', ['assets/monkey.mp3'])
+        this.load.audio('catSound', ['assets/cat.mp3'])
 
         this.enteModel = {
             name: 'Ente',
@@ -137,18 +157,19 @@ class levelThree extends Phaser.Scene {
     ///CREATE
     //##############
     create() {
+        console.log("Level 3 beginnt.");
         //------HINTERGRUND-----//
         //x und y parameter werden übergeben (Halbiert der gesamten Größe)
         background_3 = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky3');
 
         // Hintergrundmusik hinzufügen 
-        var levelMusic = this.sound.add('levelSound', {
+        levelMusic = this.sound.add('levelSound', {
             loop: true
         });
         levelMusic.play();
 
         // Sound für Button Click hinzufügen
-        var buttonClick = this.sound.add('buttonClick', {
+        buttonClick = this.sound.add('buttonClick', {
             loop: false
         });
 
@@ -157,8 +178,29 @@ class levelThree extends Phaser.Scene {
             loop: false
         });
 
+        // Geräusch, wenn Ente das Wasser berührt
+        waterSound = this.sound.add('waterSound', {
+            loop: false
+        });
+
+        // Game Over Soundeffekt
+        gameOverSound = this.sound.add('gameOverSound', {
+            loop: false
+        });
+
+        // Tiere kriegen einen Sound bei Aktivierung per Keyboard Taste
+        duckSound = this.sound.add('duckSound', {
+            loop: false
+        });
+        monkeySound = this.sound.add('monkeySound', {
+            loop: false
+        });
+        catSound = this.sound.add('catSound', {
+            loop: false
+        });
+
         // Button zum Hauptmenü zurück
-        var buttonHome = this.add.image(1288, 35, 'home').setInteractive({
+        buttonHome = this.add.image(1288, 35, 'home').setInteractive({
             useHandCursor: true
         });
         buttonHome.on('pointerdown', function (event) { // Start game on click
@@ -170,8 +212,8 @@ class levelThree extends Phaser.Scene {
         }, this);
 
         // Button Sound an/Sound aus 
-        var clickCount = 0;
-        var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
+        clickCount = 0;
+        buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
             useHandCursor: true
         });
         buttonSound.on('pointerdown', function (event) {
@@ -423,27 +465,36 @@ class levelThree extends Phaser.Scene {
                 }
             }
 
-            if (keyObjE.isDown) {
-                this.currentModel = this.enteModel
-            }
+        if (keyObjE.isDown) {
+            this.currentModel = this.enteModel;
+            duckSound.play();
+        }
 
-            if (keyObjA.isDown) {
-                this.currentModel = this.affeModel
-            }
+        if (keyObjA.isDown) {
+            this.currentModel = this.affeModel;
+            monkeySound.play();
+        }
 
-            if (keyObjK.isDown) {
-                this.currentModel = this.katzeModel
-            }
+        if (keyObjK.isDown) {
+            this.currentModel = this.katzeModel;
+            catSound.play();
+        }
 
         } else {
 
             currentPlayer.setVelocityX(0);
             if (this.leben <= 0) {
                 this.leben = 0;
+                console.log("Game Over in Level 3");
+                gameOverSound.play();
+                this.scene.start('gameOver');
             }
 
             if (this.spielAmLaufen == false) {
                 lebenLabel.setText('GEWONNEN :)')
+                console.log("Gewonnen!");
+                winSound.play();
+                this.scene.start('winGame');
                 win(this)
 
                 /* if (gameOver == true){
@@ -552,6 +603,7 @@ function movePlayerLvl3(that, direction, speed) {
 function moveGroundLvlThree(that, speed) {
 
     if (that.currentGround != undefined && that.currentGround.texture.key == "puddle" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
+        waterSound.play();
         speed = 0;
     }
 

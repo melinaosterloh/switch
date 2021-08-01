@@ -1,53 +1,56 @@
 // Level Eins im Park
 
 var enteModel;
-var duckSound
+var duckSound;
 var affeModel;
-var monkeySound
-var katzeModel
-var catSound
+var monkeySound;
+var katzeModel;
+var catSound;
 var leben;
 var spielAmLaufen;
 
-var playerPosition
+var playerPosition;
 var score = 0;
 var scoreText;
 var info;
-var currentModel
-var currentGround
-var currentPlayer
-var lebenLabel
-var cursors
-var keyObjE
-var keyObjA
-var keyObjK
-var keyObkSpace
-var keyObkEnter
+var info2;
+var currentModel;
+var currentGround;
+var currentPlayer;
+var lebenLabel;
+var cursors;
+var keyObjE;
+var keyObjA;
+var keyObjK;
+var keyObkSpace;
+var keyObkEnter;
 
-var background
-var platforms
-var trees
-var ziel
-var ziele
-var lights
-var darknesses
-var darkness
-var ghosts
-var ghosts2
-var ghost
-var ghost2
-var anzahlBodenplatten
-var buttonHome
-var buttonSound
+var background;
+var platforms;
+var trees;
+var ziel;
+var ziele;
+var lights;
+var darknesses;
+var darkness;
+var ghosts;
+var ghosts2;
+var ghost;
+var ghost2;
+var anzahlBodenplatten;
+var buttonHome;
+var buttonSound;
+var buttonClick;
+var clickCount;
 
-var levelMusic
-var jumpSound
-var collectLight
-var lostLife
+var levelMusic;
+var jumpSound;
+var gameOverSound;
+var waterSound;
 
-var xTreeValue
-var xValue
-var rnd
+var xTreeValue;
+var xValue;
+var rnd;
 
 var collisionObstacle = false;
 var defaultDarknessSpeed = 0.5;
@@ -80,8 +83,8 @@ class levelOne extends Phaser.Scene {
         this.load.audio('levelSound', ['assets/levelSound.mp3'])
         this.load.audio('buttonClick', ['assets/buttonClick.mp3'])
         this.load.audio('jumpSound', ['assets/jumpSound.mp3'])
-        this.load.audio('collectLight', ['assets/collectLight.mp3'])
-        this.load.audio('lostLife', ['assets/lifeLost.mp3'])
+        this.load.audio('waterSound', ['assets/water.mp3'])
+        this.load.audio('gameOverSound', ['assets/gameOver.mp3'])
 
         this.load.audio('duckSound', ['assets/duck.mp3'])
         this.load.audio('monkeySound', ['assets/monkey.mp3'])
@@ -147,6 +150,7 @@ class levelOne extends Phaser.Scene {
     ///CREATE
     //##############
     create() {
+        console.log("Level 1 beginnt.");
         //------HINTERGRUND-----//
         //x und y parameter werden übergeben (Halbiert der gesamten Größe)
         background = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky');
@@ -158,7 +162,7 @@ class levelOne extends Phaser.Scene {
         levelMusic.play();
 
         // Sound für Button Click hinzufügen
-        var buttonClick = this.sound.add('buttonClick', {
+        buttonClick = this.sound.add('buttonClick', {
             loop: false
         });
 
@@ -167,13 +171,13 @@ class levelOne extends Phaser.Scene {
             loop: false
         });
 
-        // Sound wenn Spieler Lichtpunkt sammelt
-        collectLight = this.sound.add('collectLight', {
+        // Geräusch, wenn Ente das Wasser berührt
+        waterSound = this.sound.add('waterSound', {
             loop: false
         });
 
-        // Sound wenn Spieler ein Leben verliert
-        lostLife = this.sound.add('lostLife', {
+        // Game Over Soundeffekt
+        gameOverSound = this.sound.add('gameOverSound', {
             loop: false
         });
 
@@ -189,7 +193,7 @@ class levelOne extends Phaser.Scene {
         });
 
         // Button zum Hauptmenü zurück
-        var buttonHome = this.add.image(1288, 35, 'home').setInteractive({
+        buttonHome = this.add.image(1288, 35, 'home').setInteractive({
             useHandCursor: true
         });
         buttonHome.on('pointerdown', function (event) { // Start game on click
@@ -201,8 +205,8 @@ class levelOne extends Phaser.Scene {
         }, this);
 
         // Button Sound an/Sound aus 
-        var clickCount = 0;
-        var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
+        clickCount = 0;
+        buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
             useHandCursor: true
         });
         buttonSound.on('pointerdown', function (event) {
@@ -536,19 +540,23 @@ class levelOne extends Phaser.Scene {
 
             if (this.leben <= 0) {
                 this.leben = 0;
+                console.log("Game Over in Level 1");
+                gameOverSound.play();
+                this.scene.start('gameOver');
+
             }
     
 
             currentPlayer.setVelocityX(0);
             if (this.spielAmLaufen == false && this.leben > 0) {
                 currentPlayer.setVelocityX(0);
-                lebenLabel.setText('Press "ENTER"                    GEWONNEN :)')
-                win(this)
+                lebenLabel.setText('Press "ENTER"                    GEWONNEN :)');
+                win(this);
 
                 if (keyObkEnter.isDown) {
                     this.scene.start('levelTwo');
                     levelMusic.stop();
-                    console.log("Level 1 auf 2 wurde gewechselt!")
+                    console.log("Level 1 auf 2 wurde gewechselt!");
                 }
             } else {
                 die(this)
@@ -559,6 +567,10 @@ class levelOne extends Phaser.Scene {
 }
 
 //Funktionien für die Animationen im Spiel
+function hitDarkness(player, darkness) {
+    this.leben = 0;
+}
+
 
 
 //Erstellen der Hindernisse
@@ -571,7 +583,7 @@ function createTree(rnd, x) {
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
             tree.body.x = tree.x - tree.width * scale / 2;
-            tree.body.y = tree.y - tree.height * scale / 2
+            tree.body.y = tree.y - tree.height * scale / 2;
             break;
         case 2:
             scale = 0.6
@@ -580,7 +592,7 @@ function createTree(rnd, x) {
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
             tree.body.x = tree.x - tree.width * scale / 2;
-            tree.body.y = tree.y - tree.height * scale / 2
+            tree.body.y = tree.y - tree.height * scale / 2;
             break;
         case 3:
             scale = 0.4
@@ -589,7 +601,7 @@ function createTree(rnd, x) {
             tree.body.width = tree.body.width * scale
             tree.body.height = tree.body.height * scale
             tree.body.x = tree.x - tree.width * scale / 2;
-            tree.body.y = tree.y - tree.height * scale / 2
+            tree.body.y = tree.y - tree.height * scale / 2;
             break;
     }
 }
@@ -669,6 +681,7 @@ function moveGroundLvlOne(that, speed) {
     }
 
     if (that.currentGround != undefined && that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
+        waterSound.play();
         speed = 0;
     }
 
@@ -678,30 +691,30 @@ function moveGroundLvlOne(that, speed) {
 
     platforms.getChildren().forEach((c) => {
         if (c instanceof Phaser.GameObjects.Sprite) {
-            c.x = c.x + speed
-            c.body.x = c.body.x + speed
+            c.x = c.x + speed;
+            c.body.x = c.body.x + speed;
         }
-    })
+    });
     trees.getChildren().forEach((t) => {
         if (t instanceof Phaser.GameObjects.Sprite) {
-            t.x = t.x + speed
-            t.body.x = t.body.x + speed
+            t.x = t.x + speed;
+            t.body.x = t.body.x + speed;
         }
-    })
+    });
     lights.getChildren().forEach((t) => {
         if (t instanceof Phaser.GameObjects.Sprite) {
-            t.x = t.x + speed
-            t.body.x = t.body.x + speed
+            t.x = t.x + speed;
+            t.body.x = t.body.x + speed;
         }
-    })
-    ziel.x = ziel.x + speed
+    });
+    ziel.x = ziel.x + speed;
     ziel.body.x = ziel.body.x + speed;
     info.x = info.x + speed
 
 }
 
 function gewonnen(player, ziel) {
-    this.spielAmLaufen = false
+    this.spielAmLaufen = false;
 }
 
 function collectLights(player, light, ) {

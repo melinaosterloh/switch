@@ -1,46 +1,57 @@
-// Level Zwei im Park
+// Level Zwei im Straßenverkehr
 
+var background_2
 var enteModel;
+var duckSound;
 var affeModel;
-var katzeModel
+var monkeySound;
+var katzeModel;
+var catSound;
 var leben;
 var spielAmLaufen;
 
-var playerPosition
+var playerPosition;
 var score = 0;
 var scoreText;
-var currentModel
-var currentGround
-var currentPlayer
-var lebenLabel
-var cursors
-var keyObjE
-var keyObjA
-var keyObjK
-var keyObkSpace
-var keyObkEnter
+var currentModel;
+var currentGround;
+var currentPlayer;
+var lebenLabel;
+var cursors;
+var keyObjE;
+var keyObjA;
+var keyObjK;
+var keyObkSpace;
+var keyObkEnter;
 
-//var background
-var background_2
-var platforms2
-var trees2
-var ziel
-var ziele
-var lights
-var darknesses
-var darkness
-var ghosts
-var ghosts2
-var ghost
-var ghost2
-var anzahlBodenplatten
+var background;
+var platforms;
+var platforms2;
+var trees;
+var trees2;
+var ziel;
+var ziele;
+var lights;
+var darknesses;
+var darkness;
+var ghosts;
+var ghosts2;
+var ghost;
+var ghost2;
+var anzahlBodenplatten;
+var buttonHome;
+var buttonSound;
+var buttonClick;
+var clickCount;
 
-var levelMusic
-var jumpSound
+var levelMusic;
+var jumpSound;
+var gameOverSound;
+var waterSound;
 
-var xTreeValue
-var xValue
-var rnd
+var xTreeValue;
+var xValue;
+var rnd;
 
 var collisionObstacle = false;
 var defaultDarknessSpeed = 0.65;
@@ -72,6 +83,12 @@ class levelTwo extends Phaser.Scene {
         this.load.audio('levelSound', ['assets/levelSound.mp3'])
         this.load.audio('buttonClick', ['assets/buttonClick.mp3'])
         this.load.audio('jumpSound', ['assets/jumpSound.mp3'])
+        this.load.audio('waterSound', ['assets/water.mp3'])
+        this.load.audio('gameOverSound', ['assets/gameOver.mp3'])
+
+        this.load.audio('duckSound', ['assets/duck.mp3'])
+        this.load.audio('monkeySound', ['assets/monkey.mp3'])
+        this.load.audio('catSound', ['assets/cat.mp3'])
 
         this.enteModel = {
             name: 'Ente',
@@ -133,6 +150,7 @@ class levelTwo extends Phaser.Scene {
     ///CREATE
     //##############
     create() {
+        console.log("Level 2 beginnt.");
         //------HINTERGRUND-----//
         //x und y parameter werden übergeben (Halbiert der gesamten Größe)
         background_2 = this.add.tileSprite(0, 707, 1400 * 2, 707 * 2, 'sky2');
@@ -144,7 +162,7 @@ class levelTwo extends Phaser.Scene {
         levelMusic.play();
 
         // Sound für Button Click hinzufügen
-        var buttonClick = this.sound.add('buttonClick', {
+        buttonClick = this.sound.add('buttonClick', {
             loop: false
         });
 
@@ -153,8 +171,29 @@ class levelTwo extends Phaser.Scene {
             loop: false
         });
 
+        // Geräusch, wenn Ente das Wasser berührt
+        waterSound = this.sound.add('waterSound', {
+            loop: false
+        });
+
+        // Game Over Soundeffekt
+        gameOverSound = this.sound.add('gameOverSound', {
+            loop: false
+        });
+
+        // Tiere kriegen einen Sound bei Aktivierung per Keyboard Taste
+        duckSound = this.sound.add('duckSound', {
+            loop: false
+        });
+        monkeySound = this.sound.add('monkeySound', {
+            loop: false
+        });
+        catSound = this.sound.add('catSound', {
+            loop: false
+        });
+
         // Button zum Hauptmenü zurück
-        var buttonHome = this.add.image(1288, 35, 'home').setInteractive({
+        buttonHome = this.add.image(1288, 35, 'home').setInteractive({
             useHandCursor: true
         });
         buttonHome.on('pointerdown', function (event) { // Start game on click
@@ -166,8 +205,8 @@ class levelTwo extends Phaser.Scene {
         }, this);
 
         // Button Sound an/Sound aus 
-        var clickCount = 0;
-        var buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
+        clickCount = 0;
+        buttonSound = this.add.image(1357, 35, 'soundOn').setInteractive({
             useHandCursor: true
         });
         buttonSound.on('pointerdown', function (event) {
@@ -409,22 +448,28 @@ class levelTwo extends Phaser.Scene {
                 }
             }
 
-            if (keyObjE.isDown) {
-                this.currentModel = this.enteModel
-            }
+        if (keyObjE.isDown) {
+            this.currentModel = this.enteModel;
+            duckSound.play();
+        }
 
-            if (keyObjA.isDown) {
-                this.currentModel = this.affeModel
-            }
+        if (keyObjA.isDown) {
+            this.currentModel = this.affeModel;
+            monkeySound.play();
+        }
 
-            if (keyObjK.isDown) {
-                this.currentModel = this.katzeModel
-            }
+        if (keyObjK.isDown) {
+            this.currentModel = this.katzeModel;
+            catSound.play();
+        }
 
         } else {
 
             if(this.leben <= 0){
                 this.leben = 0;
+                console.log("Game Over in Level 2");
+                gameOverSound.play();
+                this.scene.start('gameOver');
             }
 
             currentPlayer.setVelocityX(0);
@@ -540,7 +585,8 @@ function moveGroundLvlTwo(that, speed) {
         speed = 0;
     }
 
-    if(collisionObstacle) {
+    if(that.currentGround.texture.key == "water" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown){
+        waterSound.play();
         speed = 0;
     }
 
