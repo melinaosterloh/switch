@@ -41,7 +41,6 @@ function moveDarkness(that,speed) {
     ghosts.getChildren()[0].body.x = ghosts.getChildren()[0].body.x + speed
     ghosts2.getChildren()[0].x = ghosts2.getChildren()[0].x + speed
     ghosts2.getChildren()[0].body.x = ghosts2.getChildren()[0].body.x + speed
-    console.log("DarknessSpeed = " + speed)
 }
 
 function createTurnAnimation(that, name, frame) {
@@ -131,7 +130,6 @@ function createGhostAnimation2(that) {
 function collectLights(player, light) {
     light.disableBody(true, true);
     score += 10;
-    console.log(score)
     if(score >= 100){
         console.log("Level Up")
         score = 0;

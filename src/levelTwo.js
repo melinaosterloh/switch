@@ -553,11 +553,13 @@ function movePlayerLvl2(that, direction, speed) {
             case 'Ente':
                 if (that.currentGround.texture.key == 'street' && currentPlayer.body.touching.down) {
                     currentPlayer.setVelocityX(0);
+                } else {
+                    currentPlayer.setVelocityX(speed);
                 }
                 currentPlayer.anims.play(that.currentModel.supermodel + '_swim_' + direction, true);
                 break;
             case 'Affe':
-
+                currentPlayer.setVelocityX(speed);
                 break;
             case 'Katze':
                 currentPlayer.setVelocityX(speed * 2);

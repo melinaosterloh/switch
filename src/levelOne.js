@@ -111,7 +111,7 @@ class levelOne extends Phaser.Scene {
 
         this.leben = 3;
         this.spielAmLaufen = true;
-        this.defaultDarknessSpeed = 0.5;
+        this.defaultDarknessSpeed = 0;
 
         this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
             frameWidth: 62,
@@ -466,7 +466,6 @@ class levelOne extends Phaser.Scene {
                             currentPlayer.anims.play(this.currentModel.name + '_turn');
                             break;
                         case 'Affe':
-                            currentPlayer.setVelocityX(0.000001);
                             if (this.currentModel.jumping) {
                                 currentPlayer.anims.play(this.currentModel.name + '_jump');
                             }
@@ -635,7 +634,7 @@ function movePlayerLvl1(that, direction, speed, popUp) {
                 currentPlayer.anims.play(that.currentModel.supermodel + '_swim_' + direction, true);
                 break;
             case 'Affe':
-
+                currentPlayer.setVelocityX(speed)
                 break;
             case 'Katze':
                 currentPlayer.setVelocityX(speed * 2);
