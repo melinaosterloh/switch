@@ -24,6 +24,12 @@ class mainMenu extends Phaser.Scene {
 
        // Hintergrundmusik hinzufügen 
        var music = this.sound.add('menuSound', { loop: true });
+<<<<<<< HEAD
+=======
+       music.autoplay = true;
+       music.play();
+
+>>>>>>> main
 
        // Sound für Button Click hinzufügen
        var buttonClick = this.sound.add('buttonClick', { loop: false });
