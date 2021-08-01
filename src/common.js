@@ -127,7 +127,17 @@ function createGhostAnimation2(that) {
     });
 }
 
-
+function collectLights(player, light) {
+    light.disableBody(true, true);
+    score += 10;
+    console.log(score)
+    if(score >= 100){
+        console.log("Level Up")
+        score = 0;
+        this.leben +=1;
+    }
+    scoreText.setText('Score: ' + score);
+}
 
 /*function movePlayer(that, direction, speed) {
     var groundSpeed = 0.5;

@@ -305,7 +305,7 @@ class levelOne extends Phaser.Scene {
         currentPlayer.setCollideWorldBounds(true);
 
         //------PUNKTE------//
-        scoreText = this.add.text(16, 50, 'Score: 0', {
+        scoreText = this.add.text(16, 50, 'Score: ' + score, {
             fontSize: '32px Calibri',
             fill: 'white',
             align: "center"
@@ -432,7 +432,6 @@ class levelOne extends Phaser.Scene {
         keyObjK = this.input.keyboard.addKey('k'); // Get key object
         keyObkSpace = this.input.keyboard.addKey('space'); // Get key object
         keyObkEnter = this.input.keyboard.addKey('enter'); // Get key object
-
     }
 
     //##############
@@ -444,8 +443,6 @@ class levelOne extends Phaser.Scene {
         ghost.anims.play('ghost', true);
         ghost2.anims.play('ghost2', true);
         lebenLabel.setText('Leben: ' + this.leben)
-
-
         if (this.leben > 0 && this.spielAmLaufen) {
             moveDarkness(this, defaultDarknessSpeed);
             if (cursors.left.isDown) {
@@ -468,7 +465,7 @@ class levelOne extends Phaser.Scene {
                             currentPlayer.anims.play(this.currentModel.name + '_turn');
                             break;
                         case 'Affe':
-                            currentPlayer.setVelocityX(0);
+                            currentPlayer.setVelocityX(0.000001);
                             if (this.currentModel.jumping) {
                                 currentPlayer.anims.play(this.currentModel.name + '_jump');
                             }
@@ -646,12 +643,8 @@ function movePlayerLvl1(that, direction, speed, popUp) {
     } else {
         // Hier findet die zentrale Bewegung statt, sprich wenn der Spieler sich in der Mitte des "Spielfelds" befindet
         if (currentPlayer.getCenter().x > 100 && currentPlayer.getCenter().x < 968) {
-            console.log("Rand noch nicht erreicht")
             currentPlayer.setVelocityX(speed);
-            console.log(currentPlayer.getCenter())
         } else {
-            console.log("Rand erreicht")
-            console.log(currentPlayer.getCenter())
             currentPlayer.setVelocityX(0);
             if (direction == 'left') {
                 currentPlayer.setVelocityX(speed);
@@ -715,10 +708,4 @@ function moveGroundLvlOne(that, speed) {
 
 function gewonnen(player, ziel) {
     this.spielAmLaufen = false;
-}
-
-function collectLights(player, light, ) {
-    light.disableBody(true, true);
-    score += 10;
-    scoreText.setText('Score: ' + score);
 }

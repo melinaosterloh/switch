@@ -376,9 +376,6 @@ class levelThree extends Phaser.Scene {
         keyObjK = this.input.keyboard.addKey('k'); // Get key object
         keyObkSpace = this.input.keyboard.addKey('space'); // Get key object
         keyObkEnter = this.input.keyboard.addKey('enter'); // Get key object
-
-        //PUNKTE BZW. LICHTPUNKTE HINZUFÜGEN ZUM SAMMELN
-
     }
 
     //##############
@@ -390,7 +387,6 @@ class levelThree extends Phaser.Scene {
         ghost.anims.play('ghost', true);
         ghost2.anims.play('ghost2', true);
         lebenLabel.setText('Leben: ' + this.leben)
-
         if (this.leben > 0 && this.spielAmLaufen) {
             moveDarkness(this, defaultDarknessSpeed);
             if (cursors.left.isDown) {
@@ -647,10 +643,4 @@ function moveGroundLvlThree(that, speed) {
 
 function gewonnen(player, goal) {
     this.spielAmLaufen = false
-}
-
-function collectLights(player, light) {
-    light.disableBody(true, true);
-    score += 10;
-    scoreText.setText('Score: ' + score);
 }

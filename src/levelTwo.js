@@ -627,9 +627,3 @@ function moveGroundLvlTwo(that, speed) {
 function gewonnen(player, ziel) {
     this.spielAmLaufen = false
 }
-
-function collectLights(player, light) {
-    light.disableBody(true, true);
-    score += 10;
-    scoreText.setText('Score: ' + score);
-}
