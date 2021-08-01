@@ -36,18 +36,18 @@ class winGame extends Phaser.Scene {
           });
           goMainMenu.on('pointerdown', function(event){
             buttonClick.play();
-            this.scene.stop('gameOver');
+            this.scene.stop('winGame');
             this.scene.start('mainMenu');
             console.log("Zurück zum Hauptmenü")
          }, this);
 
          // Neuer Versuch Button
-         goAgain = this.add.image(849, 349, 'goTryAgain').setInteractive({
+         goAgain = this.add.image(849, 349, 'goAgain').setInteractive({
             useHandCursor: true,
           });
           goAgain.on('pointerdown', function(event){
             buttonClick.play();
-            this.scene.stop('gameOver');
+            this.scene.stop('winGame');
             this.scene.start('levelOne');
             console.log("Level 1 wird gestartet, Neuanfang")
          }, this);

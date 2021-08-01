@@ -111,7 +111,7 @@ class levelTwo extends Phaser.Scene {
 
         this.leben = 3;
         this.spielAmLaufen = true;
-        this.defaultDarknessSpeed = 0.65;
+        this.defaultDarknessSpeed = 0.2;
 
         this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
             frameWidth: 62,
@@ -229,7 +229,7 @@ class levelTwo extends Phaser.Scene {
         trees2 = this.physics.add.staticGroup();
         ziele = this.physics.add.staticGroup();
 
-        anzahlBodenplatten = 10
+        anzahlBodenplatten = 25
 
         for (let i = 0; i <= anzahlBodenplatten; i++) {
             if (i == 0) {
@@ -286,7 +286,7 @@ class levelTwo extends Phaser.Scene {
 
         //------PLAYER-----//
         this.currentModel = this.enteModel
-        currentPlayer = this.physics.add.sprite(200, 600, this.currentModel.name);
+        currentPlayer = this.physics.add.sprite(300, 600, this.currentModel.name);
 
         //------LEBEN------//
         lebenLabel = this.add.text(16, 16, 'Leben: ' + this.leben, {
@@ -331,9 +331,8 @@ class levelTwo extends Phaser.Scene {
         createMoveAnimation(this, 'left', this.enteModel.name, 0, 3);
         createMoveAnimation(this, 'left', this.affeModel.name, 0, 3);
         createMoveAnimation(this, 'left', this.katzeModel.name, 0, 3);
-        //    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 2);
 
-        createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
+        createJumpAnimation(this, 'jump', this.affeModel.name, 9, 10)
 
         createMoveAnimation(this, 'swim_right', this.enteModel.name, 11, 12)
         createMoveAnimation(this, 'swim_left', this.enteModel.name, 9, 10)
@@ -433,7 +432,6 @@ class levelTwo extends Phaser.Scene {
                                 break;
                         }
                     } else {
-                        //                    currentPlayer.setVelocityY(-200); //Y weil nach oben
                         switch (this.currentModel.name) {
                             case 'Ente':
                                 currentPlayer.setVelocityY(-150); //Y weil nach oben
@@ -466,6 +464,7 @@ class levelTwo extends Phaser.Scene {
 
         } else {
 
+            currentPlayer.setVelocityX(0);
             if(this.leben <= 0){
                 this.leben = 0;
                 console.log("Game Over in Level 2");
@@ -473,12 +472,15 @@ class levelTwo extends Phaser.Scene {
                 this.scene.start('gameOver');
             }
 
-            currentPlayer.setVelocityX(0);
-
-            if (this.spielAmLaufen == false && this.leben > 0) {
+            if (this.spielAmLaufen == false) {
 
 
-                lebenLabel.setText('Press "ENTER"                    GEWONNEN :)')
+                lebenLabel.setText('Press "ENTER"')
+                this.add.text(400,200, "LEVEL GESCHAFFT! \n DRÜCKE ENTER UM WEITER ZU MACHEN!", {
+                                                    font: '30px Arial',
+                                                    fill: 'pink',
+                                                    align: 'center',
+                                                });
                 win(this)
 
                 if (keyObkEnter.isDown) {
@@ -572,18 +574,33 @@ function movePlayerLvl2(that, direction, speed) {
         if (currentPlayer.getCenter().x > 100 || currentPlayer.getCenter().x < 1200) {
             currentPlayer.setVelocityX(speed);
         } else {
-            currentPlayer.setVelocityX(0);
-            if (direction == 'left') {
-                background_2.tilePositionX -= 2
-            } else {
-                background_2.tilePositionX += 2
-            }
-        }
-        currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
+                    currentPlayer.setVelocityX(0);
+                    if (direction == 'left') {
+                        currentPlayer.setVelocityX(speed);
+                        background.tilePositionX -= 2
+                    } else {
+                        if(that.currentModel.name == "Katze"){
+                            currentPlayer.setVelocityX(speed*4);
+                            background.tilePositionX += 4
+                        } else {
+                            currentPlayer.setVelocityX(speed*2);
+                            background.tilePositionX += 2
+                        }
+                    }
+                }
+                currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
     }
 }
 
 function moveGroundLvlTwo(that, speed) {
+
+    if(currentPlayer.getCenter().x < 100 || currentPlayer.getCenter().x > 1200){
+        if(that.currentModel.name == "Katze" && keyObkSpace.isDown){
+            speed = speed * 4;
+        } else {
+            speed = speed * 2;
+        }
+    }
     if (that.currentGround != undefined && that.currentGround.texture.key == "puddle" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
         speed = 0;
     }
@@ -592,6 +609,10 @@ function moveGroundLvlTwo(that, speed) {
         waterSound.play();
         speed = 0;
     }
+
+    if(collisionObstacle){
+            speed = 0;
+        }
 
     platforms2.getChildren().forEach((c) => {
         if (c instanceof Phaser.GameObjects.Sprite) {

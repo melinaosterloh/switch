@@ -111,7 +111,7 @@ class levelOne extends Phaser.Scene {
 
         this.leben = 3;
         this.spielAmLaufen = true;
-        this.defaultDarknessSpeed = 0.5;
+        this.defaultDarknessSpeed = 0.1;
 
         this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
             frameWidth: 62,
@@ -229,7 +229,7 @@ class levelOne extends Phaser.Scene {
         trees = this.physics.add.staticGroup();
         ziele = this.physics.add.staticGroup();
 
-        anzahlBodenplatten = 10
+        anzahlBodenplatten = 20
 
         for (let i = 0; i <= anzahlBodenplatten; i++) {
             if (i == 0) {
@@ -286,7 +286,7 @@ class levelOne extends Phaser.Scene {
 
         //------PLAYER-----//
         this.currentModel = this.enteModel
-        currentPlayer = this.physics.add.sprite(200, 600, this.currentModel.name);
+        currentPlayer = this.physics.add.sprite(300, 600, this.currentModel.name);
 
         //Bounce bewirkt, dass der Player kurz 'hüpft' wenn er landet
         currentPlayer.setBounce(0.2);
@@ -344,9 +344,8 @@ class levelOne extends Phaser.Scene {
         createMoveAnimation(this, 'left', this.enteModel.name, 0, 3);
         createMoveAnimation(this, 'left', this.affeModel.name, 0, 3);
         createMoveAnimation(this, 'left', this.katzeModel.name, 0, 3);
-        //    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 2);
 
-        createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
+        createJumpAnimation(this, 'jump', this.affeModel.name, 9, 10)
 
         createMoveAnimation(this, 'swim_right', this.enteModel.name, 11, 12)
         createMoveAnimation(this, 'swim_left', this.enteModel.name, 9, 10)
@@ -387,9 +386,10 @@ class levelOne extends Phaser.Scene {
         ghost2.anims.play('ghost2', true);
         lebenLabel.setText('Leben: ' + this.leben)
 
-        moveDarkness(this, this.defaultDarknessSpeed)
+
 
         if (this.leben > 0 && this.spielAmLaufen) {
+            moveDarkness(this, this.defaultDarknessSpeed)
             if (cursors.left.isDown) {
                 moveGroundLvlOne(this, 2);
                 movePlayerLvl1(this, 'left', this.currentModel.speed)
@@ -444,7 +444,6 @@ class levelOne extends Phaser.Scene {
                                 break;
                         }
                     } else {
-                        //                    currentPlayer.setVelocityY(-200); //Y weil nach oben
                         switch (this.currentModel.name) {
                             case 'Ente':
                                 currentPlayer.setVelocityY(-150); //Y weil nach oben
@@ -477,6 +476,7 @@ class levelOne extends Phaser.Scene {
 
         } else {
 
+            currentPlayer.setVelocityX(0);
             if (this.leben <= 0) {
                 this.leben = 0;
                 console.log("Game Over in Level 1");
@@ -484,12 +484,14 @@ class levelOne extends Phaser.Scene {
                 this.scene.start('gameOver');
 
             }
-    
 
-            currentPlayer.setVelocityX(0);
-            if (this.spielAmLaufen == false && this.leben > 0) {
-                currentPlayer.setVelocityX(0);
-                lebenLabel.setText('Press "ENTER"                    GEWONNEN :)');
+            if (this.spielAmLaufen == false) {
+                lebenLabel.setText('Press "ENTER"');
+                this.add.text(400,200, "LEVEL GESCHAFFT! \n DRÜCKE ENTER UM WEITER ZU MACHEN!", {
+                                    font: '30px Arial',
+                                    fill: 'pink',
+                                    align: 'center',
+                                });
                 win(this);
 
                 if (keyObkEnter.isDown) {
@@ -579,7 +581,7 @@ function movePlayerLvl1(that, direction, speed, popUp) {
         }
     } else {
         // Hier findet die zentrale Bewegung statt, sprich wenn der Spieler sich in der Mitte des "Spielfelds" befindet
-        if (currentPlayer.getCenter().x > 100 && currentPlayer.getCenter().x < 968) {
+        if (currentPlayer.getCenter().x > 100 && currentPlayer.getCenter().x < 1200) {
             currentPlayer.setVelocityX(speed);
         } else {
             currentPlayer.setVelocityX(0);
@@ -602,9 +604,9 @@ function movePlayerLvl1(that, direction, speed, popUp) {
 
 
 function moveGroundLvlOne(that, speed) {
-    if(currentPlayer.getCenter().x < 100 || currentPlayer.getCenter().x > 968){
+    if(currentPlayer.getCenter().x < 100 || currentPlayer.getCenter().x > 1200){
         if(that.currentModel.name == "Katze" && keyObkSpace.isDown){
-            speed = speed * 4;
+            speed = speed * 3;
         } else {
             speed = speed * 2;
         }

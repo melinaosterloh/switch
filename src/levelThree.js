@@ -17,13 +17,10 @@ var keyObjK
 var keyObkSpace
 var keyObkEnter
 
-//var background
 var background_3
 var platforms3
 var trees
 var trees3
-/*var ziel
-var ziele*/
 var lights;
 var darknesses;
 var darkness;
@@ -118,7 +115,7 @@ class levelThree extends Phaser.Scene {
 
         this.leben = 3;
         this.spielAmLaufen = true;
-        this.defaultDarknessSpeed = 0.8;
+        this.defaultDarknessSpeed = 0.3;
 
         this.load.spritesheet(this.enteModel.name, 'assets/ente.png', {
             frameWidth: 62,
@@ -136,10 +133,6 @@ class levelThree extends Phaser.Scene {
             frameWidth: 95,
             frameHeight: 70
         });
-        /*    this.load.spritesheet('ziel', 'assets/sun.png', {
-                frameWidth: 750,
-                frameHeight: 500
-            });*/
         this.load.spritesheet('darkness', 'assets/darknessSprite2.png', {
             frameWidth: 1464,
             frameHeight: 950
@@ -237,10 +230,9 @@ class levelThree extends Phaser.Scene {
         platforms3 = this.physics.add.staticGroup();
         fences = this.physics.add.staticGroup();
         trees3 = this.physics.add.staticGroup();
-        //    ziele = this.physics.add.staticGroup();
         houses = this.physics.add.staticGroup();
 
-        anzahlBodenplatten = 15
+        anzahlBodenplatten = 25
 
         for (let i = 0; i <= anzahlBodenplatten; i++) {
             if (i == 0) {
@@ -268,7 +260,6 @@ class levelThree extends Phaser.Scene {
             }
         }
         house = houses.create((anzahlBodenplatten - 1) * 400 - 100, 390, 'house');
-        //    ziel = ziele.create((anzahlBodenplatten) * 400, 300, 'ziel');
 
         lights = this.physics.add.group({
             key: 'light',
@@ -297,7 +288,7 @@ class levelThree extends Phaser.Scene {
 
         //------PLAYER-----//
         this.currentModel = this.enteModel
-        currentPlayer = this.physics.add.sprite(200, 600, this.currentModel.name);
+        currentPlayer = this.physics.add.sprite(350, 600, this.currentModel.name);
 
         //------LEBEN------//
         lebenLabel = this.add.text(16, 16, 'Leben: ' + this.leben, {
@@ -343,14 +334,12 @@ class levelThree extends Phaser.Scene {
         createMoveAnimation(this, 'left', this.enteModel.name, 0, 3);
         createMoveAnimation(this, 'left', this.affeModel.name, 0, 3);
         createMoveAnimation(this, 'left', this.katzeModel.name, 0, 3);
-        //    createMoveAnimation(this, 'left', this.katzeModel.supermodel, 0, 2);
 
-        createMoveAnimation(this, 'jump', this.affeModel.name, 9, 10)
+        createJumpAnimation(this, 'jump', this.affeModel.name, 9, 10)
 
         createMoveAnimation(this, 'swim_right', this.enteModel.name, 11, 12)
         createMoveAnimation(this, 'swim_left', this.enteModel.name, 9, 10)
 
-        //    createZielAnimation(this);
         createDarknessAnimation(this);
         createGhostAnimation(this);
         createGhostAnimation2(this);
@@ -360,7 +349,6 @@ class levelThree extends Phaser.Scene {
         this.physics.add.collider(fences, detectGround, null, this);
         this.physics.add.collider(currentPlayer, trees3, hitObstacle, null, this);
         this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
-        //    this.physics.add.collider(platforms3, ziel);
         this.physics.add.collider(currentPlayer, house, gewonnen, null, this);
         this.physics.add.collider(platforms3, ghost);
         this.physics.add.collider(platforms3, fences);
@@ -444,7 +432,6 @@ class levelThree extends Phaser.Scene {
                                 break;
                         }
                     } else {
-                        //                    currentPlayer.setVelocityY(-200); //Y weil nach oben
                         switch (this.currentModel.name) {
                             case 'Ente':
                                 currentPlayer.setVelocityY(-150); //Y weil nach oben
@@ -488,14 +475,9 @@ class levelThree extends Phaser.Scene {
             if (this.spielAmLaufen == false) {
                 lebenLabel.setText('GEWONNEN :)')
                 console.log("Gewonnen!");
-                winSound.play();
-                this.scene.start('winGame');
-                win(this)
 
-                /* if (gameOver == true){
-                    data.menuMusicData.stop(); // Funktion, dass Musik bei Game over stoppt????
-                    return;
-                } */
+                win(this)
+                this.scene.start('winGame');
 
 
             } else {
@@ -586,18 +568,33 @@ function movePlayerLvl3(that, direction, speed) {
         if (currentPlayer.getCenter().x > 100 || currentPlayer.getCenter().x < 1200) {
             currentPlayer.setVelocityX(speed);
         } else {
-            currentPlayer.setVelocityX(0);
-            if (direction == 'left') {
-                background_3.tilePositionX -= 2
-            } else {
-                background_3.tilePositionX += 2
-            }
-        }
-        currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
+                    currentPlayer.setVelocityX(0);
+                    if (direction == 'left') {
+                        currentPlayer.setVelocityX(speed);
+                        background.tilePositionX -= 2
+                    } else {
+                        if(that.currentModel.name == "Katze"){
+                            currentPlayer.setVelocityX(speed*4);
+                            background.tilePositionX += 4
+                        } else {
+                            currentPlayer.setVelocityX(speed*2);
+                            background.tilePositionX += 2
+                        }
+                    }
+                }
+                currentPlayer.anims.play(that.currentModel.name + '_' + direction, true);
     }
 }
 
 function moveGroundLvlThree(that, speed) {
+
+    if(currentPlayer.getCenter().x < 100 || currentPlayer.getCenter().x > 1200){
+            if(that.currentModel.name == "Katze" && keyObkSpace.isDown){
+                speed = speed * 4;
+            } else {
+                speed = speed * 2;
+            }
+    }
 
     if (that.currentGround != undefined && that.currentGround.texture.key == "puddle" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
         waterSound.play();
@@ -638,10 +635,5 @@ function moveGroundLvlThree(that, speed) {
             t.body.x = t.body.x + speed
         }
     })
-    /*    ziel.x = ziel.x + speed
-        ziel.body.x = ziel.body.x + speed;*/
-}
 
-function gewonnen(player, goal) {
-    this.spielAmLaufen = false
 }

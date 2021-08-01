@@ -8,6 +8,7 @@ function detectGround(player, ground) {
 
 function hitDarkness(player, darkness) {
     this.leben -= 1;
+    player.setX(player.x + 200)
 }
 
 function hitObstacle(player, obstacle) {
@@ -20,6 +21,10 @@ function die(that) {
 
 function win(that) {
     currentPlayer.anims.play(that.currentModel.name + '_turn');
+}
+
+function gewonnen(player, goal) {
+    this.spielAmLaufen = false
 }
 
 function moveDarkness(that,speed) {
@@ -76,6 +81,16 @@ function createMoveAnimation(that, direction, name, frame_from, frame_to) {
     });
 }
 
+function createJumpAnimation(that, direction, name, frame_from, frame_to) {
+    that.anims.create({
+        key: name + '_' + direction,
+        frames: that.anims.generateFrameNumbers(name, {
+            start: frame_from,
+            end: frame_to
+        }),
+        frameRate: 10,
+    });
+}
 
 function createZielAnimation(that) {
     that.anims.create({
