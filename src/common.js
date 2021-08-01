@@ -23,6 +23,91 @@ function moveDarkness(speed) {
     ghosts2.getChildren()[0].body.x = ghosts2.getChildren()[0].body.x + speed
 }
 
+function createTurnAnimation(that, name, frame) {
+    that.anims.create({
+        key: name + '_turn',
+        frames: [{
+            key: name,
+            frame: frame
+        }],
+        frameRate: 20
+    });
+}
+
+function createDeathAnimation(that, name, frame){
+    that.anims.create({
+        key: name + '_death',
+        frames: [{
+            key: name,
+            frame: frame
+        }],
+        frameRate: 20
+    });
+}
+
+
+function createMoveAnimation(that, direction, name, frame_from, frame_to) {
+    that.anims.create({
+        key: name + '_' + direction,
+        frames: that.anims.generateFrameNumbers(name, {
+            start: frame_from,
+            end: frame_to
+        }),
+        frameRate: 10,
+        repeat: -1
+    });
+}
+
+
+function createZielAnimation(that) {
+    that.anims.create({
+        key: 'ziel',
+        frames: that.anims.generateFrameNumbers('ziel', {
+            start: 0,
+            end: 3
+        }),
+        frameRate: 4,
+        repeat: -1
+    });
+}
+
+function createDarknessAnimation(that) {
+    that.anims.create({
+        key: 'darkness',
+        frames: that.anims.generateFrameNumbers('darkness', {
+            start: 0,
+            end: 5
+        }),
+        frameRate: 3,
+        repeat: -1
+    });
+}
+
+function createGhostAnimation(that) {
+    that.anims.create({
+        key: 'ghost',
+        frames: that.anims.generateFrameNumbers('ghost', {
+            start: 0,
+            end: 3
+        }),
+        frameRate: 4,
+        repeat: -1
+    });
+}
+
+function createGhostAnimation2(that) {
+    that.anims.create({
+        key: 'ghost2',
+        frames: that.anims.generateFrameNumbers('ghost2', {
+            start: 0,
+            end: 3
+        }),
+        frameRate: 4,
+        repeat: -1
+    });
+}
+
+
 
 /*function movePlayer(that, direction, speed) {
     var groundSpeed = 0.5;
