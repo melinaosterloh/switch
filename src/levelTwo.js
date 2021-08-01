@@ -42,6 +42,8 @@ var xTreeValue
 var xValue
 var rnd
 
+var collisionObstacle = false;
+
 class levelTwo extends Phaser.Scene {
 
     constructor(config) {
@@ -302,7 +304,7 @@ class levelTwo extends Phaser.Scene {
 
         //------KOLLISIONEN------//
         this.physics.add.collider(currentPlayer, platforms2, detectGround, null, this);
-        this.physics.add.collider(currentPlayer, trees2);
+        this.physics.add.collider(currentPlayer, trees2, hitObstacle, null, this);
         this.physics.add.collider(currentPlayer, darkness, hitDarkness, null, this);
         this.physics.add.collider(platforms2, ziel);
         this.physics.add.collider(currentPlayer, ziel, gewonnen, null, this);
@@ -340,7 +342,6 @@ class levelTwo extends Phaser.Scene {
             }
             //Rechte Pfeiltaste gedrückt: Rechtsdrehung (160) & Laufanimation nach rechts
             else if (cursors.right.isDown) {
-                background_2.tilePositionX += 0.5
                 moveDarkness(-1);
                 moveGroundLvlTwo(this, -2);
                 movePlayerLvl2(this, 'right', this.currentModel.speed)
@@ -421,6 +422,10 @@ class levelTwo extends Phaser.Scene {
 
         } else {
 
+            if(this.leben <= 0){
+                this.leben = 0;
+            }
+
             currentPlayer.setVelocityX(0);
             die(this)
 
@@ -486,8 +491,14 @@ function movePlayerLvl2(that, direction, speed) {
         groundSpeed = 0;
     }
 
+    if(collisionObstacle){
+        groundSpeed = 0;
+    }
+
 
     background_2.tilePositionX += groundSpeed
+
+
 
     if (keyObkSpace.isDown) {
         switch (that.currentModel.name) {
@@ -524,7 +535,13 @@ function movePlayerLvl2(that, direction, speed) {
 
 function moveGroundLvlTwo(that, speed) {
 
+    console.log(that.currentGround.texture.key)
+
     if (that.currentGround.texture.key == "puddle" && currentPlayer.texture.key == "Ente" && !keyObkSpace.isDown) {
+        speed = 0;
+    }
+
+    if(collisionObstacle) {
         speed = 0;
     }
 
